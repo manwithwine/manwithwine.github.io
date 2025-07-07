@@ -4,10 +4,10 @@
     --primary-color: #2c5c4f;
     --accent-color: #2c5c4f;
     --sidebar-bg: var(--primary-color);
-    --text-color: #f5f7fa;
-    --content-bg: #ffffff;
+    --text-color: #ffdbab;
+    --content-bg: #ffdbab;
     --card-bg: #a1887f;
-    --border-color: #e1e4e8;
+    --border-color: #d2b48c;
     --shadow-color: rgba(0,0,0,0.05);
 }
 
