@@ -12,7 +12,7 @@
 }
 
 [data-theme="dark"] {
-    --primary-color: #1e3a34; /* Darker, more relaxing green */
+    --primary-color: #031273;
     --sidebar-bg: var(--primary-color);
     --text-color: #e0e0e0;
     --content-bg: #121212;
