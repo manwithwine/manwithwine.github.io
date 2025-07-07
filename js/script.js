@@ -44,95 +44,75 @@ async function loadNavigation() {
         const files = await response.json();
         const navContainer = document.getElementById('nav-container');
 
-        // Create a map to organize files by directory
-        const dirMap = new Map();
+        // Create a map to track directories and their files
+        const directoryMap = new Map();
 
-        // Process all files and group by directory while preserving order
+        // First pass: organize files by directory while preserving order
         files.forEach(file => {
             const parts = file.path.split('/');
-            const dirPath = parts.slice(0, -1).join('/');
-            const fileName = parts[parts.length - 1];
-            const displayName = fileName.replace('.md', '')
-                                      .replace(/^\d+-/, '')  // Remove leading numbers
-                                      .replace(/-/g, ' ');   // Replace hyphens with spaces
+            const directory = parts.slice(0, -1).join('/');
+            const filename = parts[parts.length - 1];
+            const displayName = filename.replace('.md', '')
+                                      .replace(/^\d+-/, '')  // Remove numbers
+                                      .replace(/-/g, ' ');   // Replace hyphens
 
-            if (!dirMap.has(dirPath)) {
-                dirMap.set(dirPath, []);
+            if (!directoryMap.has(directory)) {
+                directoryMap.set(directory, []);
             }
-            dirMap.get(dirPath).push({
+            directoryMap.get(directory).push({
                 displayName: displayName,
-                fullPath: file.path,
-                fileName: fileName
+                fullPath: file.path
             });
         });
 
-        // Helper function to create directory hierarchy
-        function addDirectoryItems(dirPath, items, parentElement) {
-            const dirParts = dirPath ? dirPath.split('/') : [];
-            let currentElement = parentElement;
+        // Second pass: build the navigation tree
+        directoryMap.forEach((files, directory) => {
+            const parts = directory.split('/');
+            let currentContainer = navContainer;
 
-            // Create hierarchy elements if needed
-            for (let i = 0; i < dirParts.length; i++) {
-                const currentDir = dirParts[i];
-                const displayDirName = currentDir.replace(/^\d+-/, '').replace(/-/g, ' ');
-                let dirElement = Array.from(currentElement.children)
-                    .find(el => {
-                        const title = el.querySelector('.nav-category-title');
-                        return title && title.textContent.includes(displayDirName);
-                    });
+            // Create directory structure if needed
+            parts.forEach((part, index) => {
+                const displayPart = part.replace(/^\d+-/, '').replace(/-/g, ' ');
+                let dirElement = Array.from(currentContainer.children)
+                    .find(el => el.querySelector('.nav-category-title')?.textContent.includes(displayPart));
 
-                if (!dirElement) {
+                if (!dirElement && part) {
                     dirElement = document.createElement('div');
                     dirElement.className = 'nav-category';
                     dirElement.innerHTML = `
-                        <div class="nav-category-title">
-                            <i class="fas fa-folder"></i> ${displayDirName}
+                        <div class="nav-category-title ${index > 0 ? 'collapsed' : ''}">
+                            <i class="fas fa-folder"></i> ${displayPart}
                         </div>
-                        <div class="nav-items ${i > 0 ? 'collapsed' : ''}"></div>
+                        <div class="nav-items ${index > 0 ? 'collapsed' : ''}"></div>
                     `;
-                    currentElement.appendChild(dirElement);
+                    currentContainer.appendChild(dirElement);
 
-                    // Add click handler for this category
+                    // Add click handler
                     const titleEl = dirElement.querySelector('.nav-category-title');
                     titleEl.addEventListener('click', (e) => {
                         e.stopPropagation();
                         titleEl.classList.toggle('collapsed');
                         dirElement.querySelector('.nav-items').classList.toggle('collapsed');
                     });
-
-                    // Collapse if not top level
-                    if (i > 0) {
-                        dirElement.querySelector('.nav-category-title').classList.add('collapsed');
-                    }
                 }
 
-                currentElement = dirElement.querySelector('.nav-items');
-            }
+                if (dirElement) {
+                    currentContainer = dirElement.querySelector('.nav-items');
+                }
+            });
 
-            // Add files in the exact order from filelist.json
-            items.forEach(item => {
+            // Add files in EXACT original order
+            files.forEach(file => {
                 const itemEl = document.createElement('div');
                 itemEl.className = 'nav-item';
-                itemEl.innerHTML = `<i class="fas fa-file-alt"></i> ${item.displayName}`;
-                itemEl.dataset.path = item.fullPath;
+                itemEl.innerHTML = `<i class="fas fa-file-alt"></i> ${file.displayName}`;
+                itemEl.dataset.path = file.fullPath;
                 itemEl.addEventListener('click', () => {
-                    loadContent(item.fullPath);
+                    loadContent(file.fullPath);
                     if (window.innerWidth <= 768) sidebar.classList.remove('open');
                 });
-                currentElement.appendChild(itemEl);
+                currentContainer.appendChild(itemEl);
             });
-        }
-
-        // Process each directory in order
-        const sortedDirs = Array.from(dirMap.keys()).sort((a, b) => {
-            // Sort directories by their appearance in the filelist
-            const firstFileA = files.find(f => f.path.startsWith(a + '/'));
-            const firstFileB = files.find(f => f.path.startsWith(b + '/'));
-            return files.indexOf(firstFileA) - files.indexOf(firstFileB);
-        });
-
-        sortedDirs.forEach(dirPath => {
-            addDirectoryItems(dirPath, dirMap.get(dirPath), navContainer);
         });
 
     } catch (error) {
