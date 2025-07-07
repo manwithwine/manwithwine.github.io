@@ -2,7 +2,21 @@
     --sidebar-width: 280px;
     --header-height: 60px;
     --primary-color: #2c5c4f;
-    --accent-color: #3498db;
+    --accent-color: #2c5c4f;
+    --sidebar-bg: var(--primary-color);
+    --text-color: #e0e0e0;
+    --content-bg: #f5f7fa;
+    --card-bg: #ffffff;
+    --border-color: #e1e4e8;
+    --shadow-color: rgba(0,0,0,0.05);
+}
+
+[data-theme="dark"] {
+    --text-color: #e0e0e0;
+    --content-bg: #1a1a1a;
+    --card-bg: #2d2d2d;
+    --border-color: #444;
+    --shadow-color: rgba(0,0,0,0.2);
 }
 
 * {
@@ -10,10 +24,12 @@
     padding: 0;
     box-sizing: border-box;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    transition: background-color 0.3s ease, color 0.2s ease;
 }
 
 body {
-    background: #f5f7fa;
+    background: var(--content-bg);
+    color: var(--text-color);
 }
 
 .container {
@@ -23,7 +39,7 @@ body {
 
 .sidebar {
     width: var(--sidebar-width);
-    background: var(--primary-color);
+    background: var(--sidebar-bg);
     color: white;
     height: 100vh;
     position: fixed;
@@ -49,6 +65,7 @@ body {
     align-items: center;
     padding: 8px 0;
     cursor: pointer;
+    color: var(--text-color);
 }
 
 .nav-category-title i {
@@ -100,10 +117,11 @@ body {
 }
 
 .markdown-body {
-    background: white;
+    background: var(--card-bg);
     padding: 30px;
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 10px var(--shadow-color);
+    color: var(--text-color);
 }
 
 @media (max-width: 768px) {
@@ -128,6 +146,7 @@ body {
     background: rgba(255,255,255,0.1);
     border-radius: 4px;
     font-weight: bold;
+    color: white;
 }
 
 .home-button:hover {
@@ -151,64 +170,104 @@ body {
 
 /* Search Styles */
 .search-container {
-  position: relative;
-  margin: 15px 0 25px;
+    position: relative;
+    margin: 15px 0 25px;
 }
 
 #search-input {
-  width: 100%;
-  padding: 10px 15px 10px 35px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: rgba(255,255,255,0.1);
-  color: white;
-  font-size: 14px;
+    width: 100%;
+    padding: 10px 15px 10px 35px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: rgba(255,255,255,0.1);
+    color: white;
+    font-size: 14px;
 }
 
 #search-input:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  background-color: rgba(255,255,255,0.2);
+    outline: none;
+    border-color: var(--accent-color);
+    background-color: rgba(255,255,255,0.2);
 }
 
 .search-icon {
-  position: absolute;
-  left: 10px;
-  top: 12px;
-  color: rgba(255,255,255,0.7);
+    position: absolute;
+    left: 10px;
+    top: 12px;
+    color: rgba(255,255,255,0.7);
 }
 
 .search-results {
-  position: absolute;
-  width: 100%;
-  max-height: 300px;
-  overflow-y: auto;
-  background: var(--primary-color);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 4px;
-  margin-top: 5px;
-  z-index: 100;
-  display: none;
+    position: absolute;
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    background: var(--sidebar-bg);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+    margin-top: 5px;
+    z-index: 100;
+    display: none;
 }
 
 .search-result-item {
-  padding: 10px 15px;
-  cursor: pointer;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: var(--text-color);
 }
 
 .search-result-item:hover {
-  background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255,255,255,0.1);
 }
 
 .search-result-item .path {
-  font-size: 12px;
-  color: rgba(255,255,255,0.6);
-  margin-top: 3px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 3px;
 }
 
 .highlight {
-  background-color: rgba(255,255,0,0.3);
-  padding: 0 2px;
-  border-radius: 2px;
+    background-color: rgba(255,255,0,0.3);
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+/* Theme Switcher Styles */
+.theme-switcher {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 5px;
+    display: flex;
+    cursor: pointer;
+    z-index: 100;
+}
+
+.theme-icon {
+    padding: 5px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.theme-icon.active {
+    background: rgba(255,255,255,0.2);
+}
+
+/* Dark mode specific adjustments */
+[data-theme="dark"] {
+    .markdown-body {
+        border: 1px solid var(--border-color);
+    }
+
+    .nav-item {
+        color: rgba(255,255,255,0.8);
+    }
+
+    #search-input {
+        border-color: #444;
+    }
 }

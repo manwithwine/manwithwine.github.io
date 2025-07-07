@@ -21,18 +21,41 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     document.getElementById('nav-container').prepend(homeButton);
 
+    // Theme switcher functionality
+    const themeSwitcher = document.getElementById('themeSwitcher');
+    const themeIcons = themeSwitcher.querySelectorAll('.theme-icon');
+
+    // Check for saved preference or use system preference
+    const savedTheme = localStorage.getItem('theme') ||
+                      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    // Update active icon
+    themeIcons.forEach(icon => {
+        if (icon.dataset.theme === savedTheme) {
+            icon.classList.add('active');
+        } else {
+            icon.classList.remove('active');
+        }
+    });
+
+    // Handle theme switching
+    themeIcons.forEach(icon => {
+        icon.addEventListener('click', () => {
+            const theme = icon.dataset.theme;
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+
+            themeIcons.forEach(i => i.classList.toggle('active', i === icon));
+        });
+    });
+
     // Load navigation
     loadNavigation();
 
     // Load content from URL hash if present
     if (window.location.hash) {
         loadContent(window.location.hash.substring(1));
-    } else {
-        // Show welcome message by default
-        document.getElementById('content-display').innerHTML = `
-            <h1>Welcome to My Knowledge Base</h1>
-            <p>Select a topic from the sidebar to begin.</p>
-        `;
     }
 });
 
@@ -115,6 +138,9 @@ async function loadNavigation() {
             });
         });
 
+        // Initialize search after navigation is built
+        initializeSearch();
+
     } catch (error) {
         console.error('Error loading navigation:', error);
         document.getElementById('nav-container').innerHTML =
@@ -151,121 +177,117 @@ async function loadContent(filePath) {
 // Search functionality
 const searchIndex = [];
 
-async function buildSearchIndex() {
-  try {
-    const response = await fetch('content/filelist.json');
-    if (!response.ok) throw new Error('File list not found');
+async function initializeSearch() {
+    try {
+        const response = await fetch('content/filelist.json');
+        if (!response.ok) throw new Error('File list not found');
 
-    const files = await response.json();
+        const files = await response.json();
 
-    // Load content of each file to index
-    for (const file of files) {
-      const contentResponse = await fetch(`content/${file.path}`);
-      if (contentResponse.ok) {
-        const markdown = await contentResponse.text();
-        // Remove markdown formatting for cleaner search
-        const plainText = markdown
-          .replace(/[#*`\-_\[\]()]/g, ' ')
-          .replace(/\s+/g, ' ');
+        // Load content of each file to index
+        for (const file of files) {
+            const contentResponse = await fetch(`content/${file.path}`);
+            if (contentResponse.ok) {
+                const markdown = await contentResponse.text();
+                // Remove markdown formatting for cleaner search
+                const plainText = markdown
+                    .replace(/[#*`\-_\[\]()]/g, ' ')
+                    .replace(/\s+/g, ' ');
 
-        searchIndex.push({
-          path: file.path,
-          title: file.path.split('/').pop().replace('.md', '').replace(/-/g, ' '),
-          content: plainText.toLowerCase()
-        });
-      }
+                searchIndex.push({
+                    path: file.path,
+                    title: file.path.split('/').pop().replace('.md', '').replace(/-/g, ' '),
+                    content: plainText.toLowerCase()
+                });
+            }
+        }
+    } catch (error) {
+        console.error('Error building search index:', error);
     }
-  } catch (error) {
-    console.error('Error building search index:', error);
-  }
-}
 
-// Initialize search index when page loads
-buildSearchIndex();
-
-// Search function
-function performSearch(query) {
-  const resultsContainer = document.getElementById('search-results');
-  resultsContainer.innerHTML = '';
-
-  if (query.length < 2) {
-    resultsContainer.style.display = 'none';
-    return;
-  }
-
-  const queryLower = query.toLowerCase();
-  const results = [];
-
-  // Search both titles and content
-  searchIndex.forEach(item => {
-    const titleMatch = item.title.toLowerCase().includes(queryLower);
-    const contentMatch = item.content.includes(queryLower);
-
-    if (titleMatch || contentMatch) {
-      // Calculate relevance score
-      let score = 0;
-      if (titleMatch) score += 2;
-      if (contentMatch) score += 1;
-
-      // Count occurrences in content
-      const contentOccurrences = (item.content.match(new RegExp(queryLower, 'g')) || []).length;
-      score += contentOccurrences * 0.5;
-
-      results.push({ ...item, score });
-    }
-  });
-
-  // Sort by relevance
-  results.sort((a, b) => b.score - a.score);
-
-  // Display results
-  if (results.length > 0) {
-    results.forEach(result => {
-      const resultElement = document.createElement('div');
-      resultElement.className = 'search-result-item';
-
-      // Highlight matching parts in title
-      let displayTitle = result.title;
-      if (query.length > 1) {
-        displayTitle = result.title.replace(
-          new RegExp(query, 'gi'),
-          match => `<span class="highlight">${match}</span>`
-        );
-      }
-
-      // Show path without filename
-      const pathParts = result.path.split('/');
-      pathParts.pop(); // Remove filename
-
-      resultElement.innerHTML = `
-        <div class="title">${displayTitle}</div>
-        <div class="path">${pathParts.join(' › ')}</div>
-      `;
-
-      resultElement.addEventListener('click', () => {
-        loadContent(result.path);
-        document.getElementById('search-input').value = '';
-        resultsContainer.style.display = 'none';
-        if (window.innerWidth <= 768) sidebar.classList.remove('open');
-      });
-
-      resultsContainer.appendChild(resultElement);
+    // Search input handler
+    document.getElementById('search-input').addEventListener('input', (e) => {
+        performSearch(e.target.value.trim());
     });
-    resultsContainer.style.display = 'block';
-  } else {
-    resultsContainer.innerHTML = '<div class="search-result-item">No results found</div>';
-    resultsContainer.style.display = 'block';
-  }
+
+    // Close search when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-container')) {
+            document.getElementById('search-results').style.display = 'none';
+        }
+    });
 }
 
-// Search input handler
-document.getElementById('search-input').addEventListener('input', (e) => {
-  performSearch(e.target.value.trim());
-});
+function performSearch(query) {
+    const resultsContainer = document.getElementById('search-results');
+    resultsContainer.innerHTML = '';
 
-// Close search when clicking outside
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.search-container')) {
-    document.getElementById('search-results').style.display = 'none';
-  }
-});
+    if (query.length < 2) {
+        resultsContainer.style.display = 'none';
+        return;
+    }
+
+    const queryLower = query.toLowerCase();
+    const results = [];
+
+    // Search both titles and content
+    searchIndex.forEach(item => {
+        const titleMatch = item.title.toLowerCase().includes(queryLower);
+        const contentMatch = item.content.includes(queryLower);
+
+        if (titleMatch || contentMatch) {
+            // Calculate relevance score
+            let score = 0;
+            if (titleMatch) score += 2;
+            if (contentMatch) score += 1;
+
+            // Count occurrences in content
+            const contentOccurrences = (item.content.match(new RegExp(queryLower, 'g')) || []).length;
+            score += contentOccurrences * 0.5;
+
+            results.push({ ...item, score });
+        }
+    });
+
+    // Sort by relevance
+    results.sort((a, b) => b.score - a.score);
+
+    // Display results
+    if (results.length > 0) {
+        results.forEach(result => {
+            const resultElement = document.createElement('div');
+            resultElement.className = 'search-result-item';
+
+            // Highlight matching parts in title
+            let displayTitle = result.title;
+            if (query.length > 1) {
+                displayTitle = result.title.replace(
+                    new RegExp(query, 'gi'),
+                    match => `<span class="highlight">${match}</span>`
+                );
+            }
+
+            // Show path without filename
+            const pathParts = result.path.split('/');
+            pathParts.pop(); // Remove filename
+
+            resultElement.innerHTML = `
+                <div class="title">${displayTitle}</div>
+                <div class="path">${pathParts.join(' › ')}</div>
+            `;
+
+            resultElement.addEventListener('click', () => {
+                loadContent(result.path);
+                document.getElementById('search-input').value = '';
+                resultsContainer.style.display = 'none';
+                if (window.innerWidth <= 768) sidebar.classList.remove('open');
+            });
+
+            resultsContainer.appendChild(resultElement);
+        });
+        resultsContainer.style.display = 'block';
+    } else {
+        resultsContainer.innerHTML = '<div class="search-result-item">No results found</div>';
+        resultsContainer.style.display = 'block';
+    }
+}
