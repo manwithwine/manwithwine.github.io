@@ -147,3 +147,125 @@ async function loadContent(filePath) {
         `;
     }
 }
+
+// Search functionality
+const searchIndex = [];
+
+async function buildSearchIndex() {
+  try {
+    const response = await fetch('content/filelist.json');
+    if (!response.ok) throw new Error('File list not found');
+
+    const files = await response.json();
+
+    // Load content of each file to index
+    for (const file of files) {
+      const contentResponse = await fetch(`content/${file.path}`);
+      if (contentResponse.ok) {
+        const markdown = await contentResponse.text();
+        // Remove markdown formatting for cleaner search
+        const plainText = markdown
+          .replace(/[#*`\-_\[\]()]/g, ' ')
+          .replace(/\s+/g, ' ');
+
+        searchIndex.push({
+          path: file.path,
+          title: file.path.split('/').pop().replace('.md', '').replace(/-/g, ' '),
+          content: plainText.toLowerCase()
+        });
+      }
+    }
+  } catch (error) {
+    console.error('Error building search index:', error);
+  }
+}
+
+// Initialize search index when page loads
+buildSearchIndex();
+
+// Search function
+function performSearch(query) {
+  const resultsContainer = document.getElementById('search-results');
+  resultsContainer.innerHTML = '';
+
+  if (query.length < 2) {
+    resultsContainer.style.display = 'none';
+    return;
+  }
+
+  const queryLower = query.toLowerCase();
+  const results = [];
+
+  // Search both titles and content
+  searchIndex.forEach(item => {
+    const titleMatch = item.title.toLowerCase().includes(queryLower);
+    const contentMatch = item.content.includes(queryLower);
+
+    if (titleMatch || contentMatch) {
+      // Calculate relevance score
+      let score = 0;
+      if (titleMatch) score += 2;
+      if (contentMatch) score += 1;
+
+      // Count occurrences in content
+      const contentOccurrences = (item.content.match(new RegExp(queryLower, 'g')) || []).length;
+      score += contentOccurrences * 0.5;
+
+      results.push({ ...item, score });
+    }
+  });
+
+  // Sort by relevance
+  results.sort((a, b) => b.score - a.score);
+
+  // Display results
+  if (results.length > 0) {
+    results.forEach(result => {
+      const resultElement = document.createElement('div');
+      resultElement.className = 'search-result-item';
+
+      // Highlight matching parts in title
+      let displayTitle = result.title;
+      if (query.length > 1) {
+        displayTitle = result.title.replace(
+          new RegExp(query, 'gi'),
+          match => `<span class="highlight">${match}</span>`
+        );
+      }
+
+      // Show path without filename
+      const pathParts = result.path.split('/');
+      pathParts.pop(); // Remove filename
+
+      resultElement.innerHTML = `
+        <div class="title">${displayTitle}</div>
+        <div class="path">${pathParts.join(' › ')}</div>
+      `;
+
+      resultElement.addEventListener('click', () => {
+        loadContent(result.path);
+        document.getElementById('search-input').value = '';
+        resultsContainer.style.display = 'none';
+        if (window.innerWidth <= 768) sidebar.classList.remove('open');
+      });
+
+      resultsContainer.appendChild(resultElement);
+    });
+    resultsContainer.style.display = 'block';
+  } else {
+    resultsContainer.innerHTML = '<div class="search-result-item">No results found</div>';
+    resultsContainer.style.display = 'block';
+  }
+}
+
+// Search input handler
+document.getElementById('search-input').addEventListener('input', (e) => {
+  performSearch(e.target.value.trim());
+});
+
+// Close search when clicking outside
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.search-container')) {
+    document.getElementById('search-results').style.display = 'none';
+  }
+});
