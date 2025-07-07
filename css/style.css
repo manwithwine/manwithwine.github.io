@@ -335,16 +335,13 @@ body {
 /* Fix for iOS scrolling */
 @supports (-webkit-touch-callout: none) {
     .sidebar {
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        width: 85%;
-        overflow-y: scroll;
+        height: 100%;
+        min-height: 100vh;
+        overflow-y: auto;
         -webkit-overflow-scrolling: touch;
     }
 
     .nav-container {
-        height: calc(100% - 150px);
+        max-height: calc(100vh - 150px);
     }
 }
