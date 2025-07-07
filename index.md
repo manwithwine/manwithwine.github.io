@@ -1,9 +1,7 @@
----
-layout: default
-title: Welcome
-nav_order: 1
----
+# Welcome
 
-# Welcome to My KB
+This is the main page of your knowledge base. Use the links below to navigate:
 
-Here's some general text about this knowledge base...
+- [Network](network/)
+- [Linux](linux/)
+- [Other](other/)

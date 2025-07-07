@@ -1,11 +1,5 @@
----
-title: IPv6
-parent: Network
-nav_order: 1
----
-
 # IPv6
 
-This is a page about IPv6.
+This page contains information about IPv6.
 
-![IPv6 Screenshot](/assets/images/example.png)
+![IPv6 Example](../assets/ipv6_example.png)
