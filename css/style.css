@@ -12,7 +12,7 @@
 }
 
 [data-theme="dark"] {
-    --primary-color: #989692;
+    --primary-color: #1e1e1e;
     --sidebar-bg: var(--primary-color);
     --text-color: #e0e0e0;
     --content-bg: #121212;
