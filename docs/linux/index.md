@@ -1,3 +1,0 @@
-# Linux
-
-Linux related content.

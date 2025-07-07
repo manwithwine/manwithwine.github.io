@@ -1,3 +1,0 @@
-# Other
-
-Miscellaneous topics.
