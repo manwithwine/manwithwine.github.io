@@ -44,54 +44,101 @@ async function loadNavigation() {
         const files = await response.json();
         const navContainer = document.getElementById('nav-container');
 
-        // Group files by category
-        const categories = {};
+        // Build hierarchical structure
+        const root = {};
         files.forEach(file => {
             const parts = file.path.split('/');
-            const category = parts[0]; // First part is the category
-            if (!categories[category]) {
-                categories[category] = [];
+            let current = root;
+
+            for (let i = 0; i < parts.length; i++) {
+                const part = parts[i];
+                const isFile = i === parts.length - 1;
+
+                if (isFile) {
+                    const fileName = part.replace('.md', '')
+                                       .replace(/^\d+-/, '')  // Remove leading numbers
+                                       .replace(/-/g, ' ');   // Replace hyphens with spaces
+                    current[fileName] = file.path; // Mark as file
+                } else {
+                    if (!current[part]) {
+                        current[part] = {}; // Create folder if not exists
+                    }
+                    current = current[part];
+                }
             }
-            categories[category].push({
-                name: parts.slice(1).join('/').replace('.md', '').replace(/-/g, ' '),
-                path: file.path
-            });
         });
 
-        // Build navigation HTML
-        for (const [category, items] of Object.entries(categories)) {
-            const categoryEl = document.createElement('div');
-            categoryEl.className = 'nav-category';
+        // Recursive function to build navigation
+        function buildNav(node, parentElement, depth = 0) {
+            // Convert to array and sort
+            const entries = Object.entries(node).sort(([aName, aValue], [bName, bValue]) => {
+                const aIsFolder = typeof aValue === 'object';
+                const bIsFolder = typeof bValue === 'object';
 
-            const titleEl = document.createElement('div');
-            titleEl.className = 'nav-category-title';
-            titleEl.innerHTML = `<i class="fas fa-folder"></i> ${category}`;
+                // Intro files first
+                const aIsIntro = aName.toLowerCase().includes('intro') ||
+                                aName.toLowerCase().includes('содержание');
+                const bIsIntro = bName.toLowerCase().includes('intro') ||
+                                bName.toLowerCase().includes('содержание');
 
-            const itemsEl = document.createElement('div');
-            itemsEl.className = 'nav-items';
+                if (aIsIntro && !bIsIntro) return -1;
+                if (!aIsIntro && bIsIntro) return 1;
 
-            items.forEach(item => {
-                const itemEl = document.createElement('div');
-                itemEl.className = 'nav-item';
-                itemEl.innerHTML = `<i class="fas fa-file-alt"></i> ${item.name}`;
-                itemEl.dataset.path = item.path;
-                itemEl.addEventListener('click', () => {
-                    loadContent(item.path);
-                    if (window.innerWidth <= 768) sidebar.classList.remove('open');
-                });
-                itemsEl.appendChild(itemEl);
+                // Then folders
+                if (aIsFolder && !bIsFolder) return -1;
+                if (!aIsFolder && bIsFolder) return 1;
+
+                // Then by name
+                return aName.localeCompare(bName);
             });
 
-            // Collapse/expand functionality
-            titleEl.addEventListener('click', () => {
-                titleEl.classList.toggle('collapsed');
-                itemsEl.classList.toggle('collapsed');
-            });
+            for (const [name, value] of entries) {
+                if (typeof value === 'string') {
+                    // It's a file
+                    const itemEl = document.createElement('div');
+                    itemEl.className = 'nav-item';
+                    itemEl.innerHTML = `<i class="fas fa-file-alt"></i> ${name}`;
+                    itemEl.dataset.path = value;
+                    itemEl.addEventListener('click', () => {
+                        loadContent(value);
+                        if (window.innerWidth <= 768) sidebar.classList.remove('open');
+                    });
+                    parentElement.appendChild(itemEl);
+                } else {
+                    // It's a folder
+                    const categoryEl = document.createElement('div');
+                    categoryEl.className = 'nav-category';
 
-            categoryEl.appendChild(titleEl);
-            categoryEl.appendChild(itemsEl);
-            navContainer.appendChild(categoryEl);
+                    const titleEl = document.createElement('div');
+                    titleEl.className = 'nav-category-title';
+                    titleEl.innerHTML = `<i class="fas fa-folder"></i> ${name}`;
+
+                    const itemsEl = document.createElement('div');
+                    itemsEl.className = 'nav-items';
+
+                    // Add collapse class if not top level
+                    if (depth > 0) {
+                        itemsEl.classList.add('collapsed');
+                        titleEl.classList.add('collapsed');
+                    }
+
+                    buildNav(value, itemsEl, depth + 1);
+
+                    titleEl.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        titleEl.classList.toggle('collapsed');
+                        itemsEl.classList.toggle('collapsed');
+                    });
+
+                    categoryEl.appendChild(titleEl);
+                    categoryEl.appendChild(itemsEl);
+                    parentElement.appendChild(categoryEl);
+                }
+            }
         }
+
+        buildNav(root, navContainer);
+
     } catch (error) {
         console.error('Error loading navigation:', error);
         document.getElementById('nav-container').innerHTML =
@@ -109,11 +156,18 @@ async function loadContent(filePath) {
 
         document.getElementById('content-display').innerHTML = html;
         window.location.hash = filePath;
+
+        // Scroll to top
+        window.scrollTo(0, 0);
     } catch (error) {
         document.getElementById('content-display').innerHTML = `
-            <h1>Error loading content</h1>
-            <p>${error.message}</p>
-            <button onclick="location.reload()">Return Home</button>
+            <div class="error-message">
+                <h1>Error loading content</h1>
+                <p>${error.message}</p>
+                <button onclick="location.hash='';location.reload()" class="home-button">
+                    <i class="fas fa-home"></i> Return Home
+                </button>
+            </div>
         `;
     }
 }

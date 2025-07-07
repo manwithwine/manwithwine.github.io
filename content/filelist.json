@@ -1,20 +1,23 @@
 [
   {
+    "path": "Linux/Intro.md"
+  },
+  {
+    "path": "Network/Содержание.md"
+  },
+  {
     "path": "Linux/Commands.md"
   },
   {
     "path": "Linux/Setup.md"
   },
   {
-    "path": "Network/IPv6/Addressing.md"
-  },
-  {
-    "path": "Network/IPv6/Basics.md"
-  },
-  {
-    "path": "Network/Intro.md"
-  },
-  {
     "path": "Other/About.md"
+  },
+  {
+    "path": "Network/IPv6/1-Basics.md"
+  },
+  {
+    "path": "Network/IPv6/2-Addressing.md"
   }
 ]
