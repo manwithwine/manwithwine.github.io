@@ -4,9 +4,9 @@
     --primary-color: #2c5c4f;
     --accent-color: #2c5c4f;
     --sidebar-bg: var(--primary-color);
-    --text-color: #1a1a1a;
-    --content-bg: #f5f7fa;
-    --card-bg: #ffffff;
+    --text-color: #f5f7fa;
+    --content-bg: #ffffff;
+    --card-bg: #a1887f;
     --border-color: #e1e4e8;
     --shadow-color: rgba(0,0,0,0.05);
 }
