@@ -2,10 +2,10 @@ name: Update Navigation Automatically
 
 on:
   push:
-    branches: [ main ]  # or 'master' if that's your default branch
+    branches: [ main ]
     paths:
-      - 'content/**'    # Only run when content files change
-      - 'generate_filelist.py'  # Or if the generator itself changes
+      - 'content/**'
+      - 'generate_filelist.py'
 
 jobs:
   update_navigation:
@@ -13,11 +13,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.AUTO_UPDATER_TOKEN }}
 
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.12'
+        python-version: '3.10'
 
     - name: Run filelist generator
       run: |
