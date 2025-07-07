@@ -1,10 +1,9 @@
 ---
-title: "My Knowledge Base"
 layout: default
+title: Welcome
+nav_order: 1
 ---
 
-# Welcome to My Notes
+# Welcome to My KB
 
-Browse my technical notes:
-
-- [Networking](.networking/networking.md)
+Here's some general text about this knowledge base...

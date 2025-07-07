@@ -1,3 +1,19 @@
-title: "ManWithWine's Notes"  # Changes the main header
-author: "Your Name"           # Replaces "Mansur" in footer
-theme: minima
+title: My Knowledge Base
+theme: just-the-docs
+
+# Optional settings:
+logo: "/assets/logo.png"
+color_scheme: light
+
+# Enable tree-style sidebar
+just_the_docs:
+  collections:
+    network:
+      name: "Network"
+      nav_fold: true
+    linux:
+      name: "Linux"
+      nav_fold: true
+    other:
+      name: "Other"
+      nav_fold: true
