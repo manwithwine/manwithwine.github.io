@@ -1,0 +1,32 @@
+name: Update Navigation Automatically
+
+on:
+  push:
+    branches: [ main ]  # or 'master' if that's your default branch
+    paths:
+      - 'content/**'    # Only run when content files change
+      - 'generate_filelist.py'  # Or if the generator itself changes
+
+jobs:
+  update_navigation:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Run filelist generator
+      run: |
+        python generate_filelist.py
+
+    - name: Commit changes
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add content/filelist.json
+        git diff --quiet && git diff --staged --quiet || git commit -m "Auto-update navigation"
+        git push
