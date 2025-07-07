@@ -4,6 +4,7 @@ color_scheme: light
 
 collections:
   network:
+    name: "Содержание"
     output: true
   linux:
     output: true
