@@ -1,0 +1,15 @@
+title: My Knowledge Base
+remote_theme: just-the-docs/just-the-docs
+color_scheme: light
+
+just_the_docs:
+  collections:
+    network:
+      name: "Network"
+      nav_fold: true
+    linux:
+      name: "Linux"
+      nav_fold: true
+    other:
+      name: "Other"
+      nav_fold: true
