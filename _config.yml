@@ -1,2 +1,3 @@
-title: "My Technical Notes"
+title: "ManWithWine's Notes"  # Changes the main header
+author: "Your Name"           # Replaces "Mansur" in footer
 theme: minima
