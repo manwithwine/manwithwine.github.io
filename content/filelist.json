@@ -1,20 +1,20 @@
 [
   {
-    "path": "linux/Commands.md"
+    "path": "Linux/Commands.md"
   },
   {
-    "path": "linux/Setup.md"
+    "path": "Linux/Setup.md"
   },
   {
-    "path": "network/intro.md"
+    "path": "Network/intro.md"
   },
   {
-    "path": "network/ipv6/Addressing.md"
+    "path": "Network/IPv6/Addressing.md"
   },
   {
-    "path": "network/ipv6/Basics.md"
+    "path": "Network/IPv6/Basics.md"
   },
   {
-    "path": "other/About.md"
+    "path": "Other/About.md"
   }
 ]
