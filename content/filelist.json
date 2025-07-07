@@ -21,6 +21,9 @@
     "path": "Network/IPv6/3-SLAAC.md"
   },
   {
+    "path": "Network/IPv6/DHCPv6.md"
+  },
+  {
     "path": "Other/About.md"
   }
 ]
