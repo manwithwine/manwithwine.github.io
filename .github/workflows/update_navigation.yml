@@ -10,25 +10,32 @@ on:
 jobs:
   update_navigation:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
     - uses: actions/checkout@v4
       with:
-        token: ${{ secrets.AUTO_UPDATER_TOKEN }}
+        fetch-depth: 0  # Important: fetches full history
 
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.10'
+        python-version: '3.12'
 
-    - name: Run filelist generator
+    - name: Install dependencies
+      run: pip install watchdog  # For better file detection
+
+    - name: Run filelist generator (force update)
       run: |
+        echo "Force regenerating filelist.json"
         python generate_filelist.py
+        cat content/filelist.json  # Debug output
 
     - name: Commit changes
       run: |
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
         git add content/filelist.json
-        git diff --quiet && git diff --staged --quiet || git commit -m "Auto-update navigation"
-        git push
+        git status  # Debug output
+        git diff --cached --quiet || (git commit -m "Auto-update navigation" && git push)
