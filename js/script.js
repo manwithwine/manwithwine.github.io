@@ -291,3 +291,54 @@ function performSearch(query) {
         resultsContainer.style.display = 'block';
     }
 }
+
+// Mobile sidebar improvements
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+// Close sidebar when clicking overlay
+sidebarOverlay.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+});
+
+// Move menu toggle button
+function positionMenuToggle() {
+    if (window.innerWidth <= 768) {
+        menuToggle.style.position = 'fixed';
+        menuToggle.style.bottom = '20px';
+        menuToggle.style.left = '20px';
+        menuToggle.style.top = 'auto';
+    } else {
+        menuToggle.style.position = 'absolute';
+        menuToggle.style.top = '10px';
+        menuToggle.style.left = '10px';
+        menuToggle.style.bottom = 'auto';
+    }
+}
+
+// Initialize on load
+positionMenuToggle();
+window.addEventListener('resize', positionMenuToggle);
+
+// Swipe gesture support
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+}, false);
+
+document.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+}, false);
+
+function handleSwipe() {
+    // Swipe right to open (only if starting from left edge)
+    if (touchEndX > touchStartX + 50 && touchStartX < 50) {
+        sidebar.classList.add('open');
+    }
+    // Swipe left to close
+    else if (touchStartX > touchEndX + 50 && sidebar.classList.contains('open')) {
+        sidebar.classList.remove('open');
+    }
+}
