@@ -7,4 +7,4 @@ layout: default
 
 Browse my technical notes:
 
-- [Networking](/networking.md)
+- [Networking](.networking/networking.md)
