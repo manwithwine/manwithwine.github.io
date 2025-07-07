@@ -4,44 +4,45 @@ import re
 from functools import cmp_to_key
 
 
-def get_file_sort_key(filepath):
-    """Extract numeric prefix and other sorting factors"""
-    filename = os.path.basename(filepath)
-
-    # 1. Check for intro files
-    lower_name = filename.lower()
-    if any(x in lower_name for x in ['intro', 'содержание', 'readme']):
-        return (0, 0, filename)  # Highest priority
-
-    # 2. Extract leading number if exists
-    num_match = re.match(r'^(\d+)', filename)
-    if num_match:
-        return (1, int(num_match.group(1)), filename)  # Medium priority with number
-
-    return (2, float('inf'), filename)  # Lowest priority (unnumbered files)
+def extract_number(filename):
+    """Extract leading number from filename"""
+    match = re.match(r'^(\d+)', filename)
+    return int(match.group(1)) if match else float('inf')
 
 
-def compare_files(a, b):
-    """Custom comparator for sorting files"""
-    # Primary sort by directory depth
-    depth_cmp = a['path'].count('/') - b['path'].count('/')
-    if depth_cmp != 0:
-        return depth_cmp
+def compare_items(a, b):
+    """Comparison function that properly handles numbered files"""
+    # Get base names without extension
+    a_name = os.path.basename(a['path']).replace('.md', '')
+    b_name = os.path.basename(b['path']).replace('.md', '')
 
-    # Get sort keys for both files
-    a_priority, a_num, a_name = get_file_sort_key(a['path'])
-    b_priority, b_num, b_name = get_file_sort_key(b['path'])
+    # Check for intro files (highest priority)
+    intro_terms = ['intro', 'содержание', 'readme']
+    a_is_intro = any(term in a_name.lower() for term in intro_terms)
+    b_is_intro = any(term in b_name.lower() for term in intro_terms)
 
-    # Sort by priority (intro files first)
-    if a_priority != b_priority:
-        return a_priority - b_priority
+    if a_is_intro and not b_is_intro:
+        return -1
+    if not a_is_intro and b_is_intro:
+        return 1
 
-    # For numbered files, sort by numbers
-    if a_priority == 1 and b_priority == 1:
-        return a_num - b_num
+    # Extract numbers from filenames
+    a_num = extract_number(a_name)
+    b_num = extract_number(b_name)
+
+    # If both have numbers, sort by numbers
+    if a_num != float('inf') and b_num != float('inf'):
+        if a_num != b_num:
+            return a_num - b_num
+
+    # If only one has number, it comes first
+    if a_num != float('inf') and b_num == float('inf'):
+        return -1
+    if a_num == float('inf') and b_num != float('inf'):
+        return 1
 
     # Finally sort alphabetically
-    return (a_name > b_name) - (a_name < b_name)
+    return (a_name.lower() > b_name.lower()) - (a_name.lower() < b_name.lower())
 
 
 def find_markdown_files(directory):
@@ -51,7 +52,12 @@ def find_markdown_files(directory):
         dirs.sort(key=lambda d: [int(s) if s.isdigit() else s.lower()
                                  for s in re.split('([0-9]+)', d)])
 
-        for file in files:
+        # Sort files using our custom comparison
+        files_sorted = sorted(files, key=cmp_to_key(
+            lambda a, b: compare_items({'path': a}, {'path': b})
+        ))
+
+        for file in files_sorted:
             if file.endswith('.md'):
                 path = os.path.join(root, file)
                 rel_path = os.path.relpath(path, directory).replace('\\', '/')
@@ -63,8 +69,8 @@ def main():
     content_dir = os.path.join(os.path.dirname(__file__), 'content')
     files = find_markdown_files(content_dir)
 
-    # Sort using our custom comparator
-    files.sort(key=cmp_to_key(compare_files))
+    # Secondary sort by path depth
+    files.sort(key=lambda x: x['path'].count('/'))
 
     output_path = os.path.join(content_dir, 'filelist.json')
     with open(output_path, 'w', encoding='utf-8') as f:
