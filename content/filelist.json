@@ -18,6 +18,9 @@
     "path": "Network/IPv6/2-Addressing.md"
   },
   {
+    "path": "Network/IPv6/3-SLAAC.md"
+  },
+  {
     "path": "Other/About.md"
   }
 ]
