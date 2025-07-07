@@ -1,0 +1,6 @@
+theme: minima  
+navigation:
+  - text: "Home"
+    url: /  
+  - text: "Networking"
+    url: /networking.md  
