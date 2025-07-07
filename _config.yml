@@ -2,6 +2,14 @@ title: My Knowledge Base
 remote_theme: just-the-docs/just-the-docs
 color_scheme: light
 
+collections:
+  network:
+    output: true
+  linux:
+    output: true
+  other:
+    output: true
+
 just_the_docs:
   collections:
     network:
