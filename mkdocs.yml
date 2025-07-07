@@ -1,0 +1,24 @@
+site_name: My Knowledge Base
+theme:
+  name: material
+  features:
+  - navigation.tabs
+  - navigation.sections
+  - navigation.expand
+  - navigation.instant
+nav:
+- Home: index.md
+- Network:
+  - Overview: network/index.md
+  - DHCP: network/dhcp.md
+  - IPv6:
+    - Overview: network/ipv6/index.md
+    - SLAAC: network/ipv6/slaac.md
+    - Static Routing: network/ipv6/static.md
+- Linux: linux/index.md
+- Other: other/index.md
+markdown_extensions:
+- admonition
+- codehilite
+- toc
+- tables
