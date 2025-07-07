@@ -1,0 +1,20 @@
+[
+  {
+    "path": "linux/Commands.md"
+  },
+  {
+    "path": "linux/Setup.md"
+  },
+  {
+    "path": "network/into.md"
+  },
+  {
+    "path": "network/ipv6/Addressing.md"
+  },
+  {
+    "path": "network/ipv6/Basics.md"
+  },
+  {
+    "path": "other/About.md"
+  }
+]
