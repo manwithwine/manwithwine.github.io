@@ -6,13 +6,13 @@
     "path": "Linux/Setup.md"
   },
   {
-    "path": "Network/intro.md"
-  },
-  {
     "path": "Network/IPv6/Addressing.md"
   },
   {
     "path": "Network/IPv6/Basics.md"
+  },
+  {
+    "path": "Network/Intro.md"
   },
   {
     "path": "Other/About.md"

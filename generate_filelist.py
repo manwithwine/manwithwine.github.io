@@ -18,6 +18,9 @@ def main():
     content_dir = os.path.join(os.path.dirname(__file__), 'content')
     files = find_markdown_files(content_dir)
 
+    # Sort files by path for consistent ordering
+    files.sort(key=lambda x: x['path'])
+
     output_path = os.path.join(content_dir, 'filelist.json')
     with open(output_path, 'w') as f:
         json.dump(files, f, indent=2)

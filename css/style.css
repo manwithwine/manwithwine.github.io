@@ -120,3 +120,31 @@ body {
         display: block;
     }
 }
+
+/* Home button style */
+.home-button {
+    margin-bottom: 20px;
+    padding: 10px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.home-button:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.home-button i {
+    margin-right: 8px;
+}
+
+/* File icons in nav */
+.nav-item i.fa-file-alt {
+    margin-right: 8px;
+    opacity: 0.7;
+}
+
+/* Better spacing for nested items */
+.nav-items .nav-item {
+    padding-left: 20px;
+}

@@ -7,18 +7,37 @@ document.addEventListener('DOMContentLoaded', function() {
         sidebar.classList.toggle('open');
     });
 
-    // Load navigation and content
+    // Home button in sidebar
+    const homeButton = document.createElement('div');
+    homeButton.className = 'nav-item home-button';
+    homeButton.innerHTML = '<i class="fas fa-home"></i> Home';
+    homeButton.addEventListener('click', () => {
+        document.getElementById('content-display').innerHTML = `
+            <h1>Welcome to My Knowledge Base</h1>
+            <p>Select a topic from the sidebar to begin.</p>
+        `;
+        window.location.hash = '';
+        if (window.innerWidth <= 768) sidebar.classList.remove('open');
+    });
+    document.getElementById('nav-container').prepend(homeButton);
+
+    // Load navigation
     loadNavigation();
 
-    // Load default content if URL has hash
+    // Load content from URL hash if present
     if (window.location.hash) {
         loadContent(window.location.hash.substring(1));
+    } else {
+        // Show welcome message by default
+        document.getElementById('content-display').innerHTML = `
+            <h1>Welcome to My Knowledge Base</h1>
+            <p>Select a topic from the sidebar to begin.</p>
+        `;
     }
 });
 
 async function loadNavigation() {
     try {
-        // Fetch the list of markdown files
         const response = await fetch('content/filelist.json');
         if (!response.ok) throw new Error('File list not found');
 
@@ -29,11 +48,14 @@ async function loadNavigation() {
         const categories = {};
         files.forEach(file => {
             const parts = file.path.split('/');
-            const category = parts[1]; // "Network", "Linux", etc.
+            const category = parts[0]; // First part is the category
             if (!categories[category]) {
                 categories[category] = [];
             }
-            categories[category].push(file);
+            categories[category].push({
+                name: parts.slice(1).join('/').replace('.md', '').replace(/-/g, ' '),
+                path: file.path
+            });
         });
 
         // Build navigation HTML
@@ -49,16 +71,13 @@ async function loadNavigation() {
             itemsEl.className = 'nav-items';
 
             items.forEach(item => {
-                const displayName = item.path.split('/').pop().replace('.md', '').replace(/-/g, ' ');
                 const itemEl = document.createElement('div');
                 itemEl.className = 'nav-item';
-                itemEl.textContent = displayName;
+                itemEl.innerHTML = `<i class="fas fa-file-alt"></i> ${item.name}`;
                 itemEl.dataset.path = item.path;
                 itemEl.addEventListener('click', () => {
                     loadContent(item.path);
-                    if (window.innerWidth <= 768) {
-                        sidebar.classList.remove('open');
-                    }
+                    if (window.innerWidth <= 768) sidebar.classList.remove('open');
                 });
                 itemsEl.appendChild(itemEl);
             });
@@ -94,6 +113,7 @@ async function loadContent(filePath) {
         document.getElementById('content-display').innerHTML = `
             <h1>Error loading content</h1>
             <p>${error.message}</p>
+            <button onclick="location.reload()">Return Home</button>
         `;
     }
 }
