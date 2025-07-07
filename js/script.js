@@ -44,100 +44,96 @@ async function loadNavigation() {
         const files = await response.json();
         const navContainer = document.getElementById('nav-container');
 
-        // Build hierarchical structure
-        const root = {};
+        // Create a map to organize files by directory
+        const dirMap = new Map();
+
+        // Process all files and group by directory while preserving order
         files.forEach(file => {
             const parts = file.path.split('/');
-            let current = root;
+            const dirPath = parts.slice(0, -1).join('/');
+            const fileName = parts[parts.length - 1];
+            const displayName = fileName.replace('.md', '')
+                                      .replace(/^\d+-/, '')  // Remove leading numbers
+                                      .replace(/-/g, ' ');   // Replace hyphens with spaces
 
-            for (let i = 0; i < parts.length; i++) {
-                const part = parts[i];
-                const isFile = i === parts.length - 1;
-
-                if (isFile) {
-                    const fileName = part.replace('.md', '')
-                                       .replace(/^\d+-/, '')  // Remove leading numbers
-                                       .replace(/-/g, ' ');   // Replace hyphens with spaces
-                    current[fileName] = file.path; // Mark as file
-                } else {
-                    if (!current[part]) {
-                        current[part] = {}; // Create folder if not exists
-                    }
-                    current = current[part];
-                }
+            if (!dirMap.has(dirPath)) {
+                dirMap.set(dirPath, []);
             }
+            dirMap.get(dirPath).push({
+                displayName: displayName,
+                fullPath: file.path,
+                fileName: fileName
+            });
         });
 
-        // Recursive function to build navigation
-        function buildNav(node, parentElement, depth = 0) {
-            // Convert to array and sort
-            const entries = Object.entries(node).sort(([aName, aValue], [bName, bValue]) => {
-                const aIsFolder = typeof aValue === 'object';
-                const bIsFolder = typeof bValue === 'object';
+        // Helper function to create directory hierarchy
+        function addDirectoryItems(dirPath, items, parentElement) {
+            const dirParts = dirPath ? dirPath.split('/') : [];
+            let currentElement = parentElement;
 
-                // Intro files first
-                const aIsIntro = aName.toLowerCase().includes('intro') ||
-                                aName.toLowerCase().includes('содержание');
-                const bIsIntro = bName.toLowerCase().includes('intro') ||
-                                bName.toLowerCase().includes('содержание');
-
-                if (aIsIntro && !bIsIntro) return -1;
-                if (!aIsIntro && bIsIntro) return 1;
-
-                // Then folders
-                if (aIsFolder && !bIsFolder) return -1;
-                if (!aIsFolder && bIsFolder) return 1;
-
-                // Then by name
-                return aName.localeCompare(bName);
-            });
-
-            for (const [name, value] of entries) {
-                if (typeof value === 'string') {
-                    // It's a file
-                    const itemEl = document.createElement('div');
-                    itemEl.className = 'nav-item';
-                    itemEl.innerHTML = `<i class="fas fa-file-alt"></i> ${name}`;
-                    itemEl.dataset.path = value;
-                    itemEl.addEventListener('click', () => {
-                        loadContent(value);
-                        if (window.innerWidth <= 768) sidebar.classList.remove('open');
+            // Create hierarchy elements if needed
+            for (let i = 0; i < dirParts.length; i++) {
+                const currentDir = dirParts[i];
+                const displayDirName = currentDir.replace(/^\d+-/, '').replace(/-/g, ' ');
+                let dirElement = Array.from(currentElement.children)
+                    .find(el => {
+                        const title = el.querySelector('.nav-category-title');
+                        return title && title.textContent.includes(displayDirName);
                     });
-                    parentElement.appendChild(itemEl);
-                } else {
-                    // It's a folder
-                    const categoryEl = document.createElement('div');
-                    categoryEl.className = 'nav-category';
 
-                    const titleEl = document.createElement('div');
-                    titleEl.className = 'nav-category-title';
-                    titleEl.innerHTML = `<i class="fas fa-folder"></i> ${name}`;
+                if (!dirElement) {
+                    dirElement = document.createElement('div');
+                    dirElement.className = 'nav-category';
+                    dirElement.innerHTML = `
+                        <div class="nav-category-title">
+                            <i class="fas fa-folder"></i> ${displayDirName}
+                        </div>
+                        <div class="nav-items ${i > 0 ? 'collapsed' : ''}"></div>
+                    `;
+                    currentElement.appendChild(dirElement);
 
-                    const itemsEl = document.createElement('div');
-                    itemsEl.className = 'nav-items';
-
-                    // Add collapse class if not top level
-                    if (depth > 0) {
-                        itemsEl.classList.add('collapsed');
-                        titleEl.classList.add('collapsed');
-                    }
-
-                    buildNav(value, itemsEl, depth + 1);
-
+                    // Add click handler for this category
+                    const titleEl = dirElement.querySelector('.nav-category-title');
                     titleEl.addEventListener('click', (e) => {
                         e.stopPropagation();
                         titleEl.classList.toggle('collapsed');
-                        itemsEl.classList.toggle('collapsed');
+                        dirElement.querySelector('.nav-items').classList.toggle('collapsed');
                     });
 
-                    categoryEl.appendChild(titleEl);
-                    categoryEl.appendChild(itemsEl);
-                    parentElement.appendChild(categoryEl);
+                    // Collapse if not top level
+                    if (i > 0) {
+                        dirElement.querySelector('.nav-category-title').classList.add('collapsed');
+                    }
                 }
+
+                currentElement = dirElement.querySelector('.nav-items');
             }
+
+            // Add files in the exact order from filelist.json
+            items.forEach(item => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'nav-item';
+                itemEl.innerHTML = `<i class="fas fa-file-alt"></i> ${item.displayName}`;
+                itemEl.dataset.path = item.fullPath;
+                itemEl.addEventListener('click', () => {
+                    loadContent(item.fullPath);
+                    if (window.innerWidth <= 768) sidebar.classList.remove('open');
+                });
+                currentElement.appendChild(itemEl);
+            });
         }
 
-        buildNav(root, navContainer);
+        // Process each directory in order
+        const sortedDirs = Array.from(dirMap.keys()).sort((a, b) => {
+            // Sort directories by their appearance in the filelist
+            const firstFileA = files.find(f => f.path.startsWith(a + '/'));
+            const firstFileB = files.find(f => f.path.startsWith(b + '/'));
+            return files.indexOf(firstFileA) - files.indexOf(firstFileB);
+        });
+
+        sortedDirs.forEach(dirPath => {
+            addDirectoryItems(dirPath, dirMap.get(dirPath), navContainer);
+        });
 
     } catch (error) {
         console.error('Error loading navigation:', error);
