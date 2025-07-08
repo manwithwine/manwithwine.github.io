@@ -162,6 +162,8 @@ body {
     border-radius: 4px;
     font-weight: bold;
     color: white;
+    margin-left: 10px; /* Added this line to move it right */
+    margin-right: -10px; /* Compensate for the added left margin */
 }
 
 .home-button:hover {
