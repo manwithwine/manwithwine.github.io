@@ -18,13 +18,25 @@
     "path": "Network/IPv6/1-Основы.md"
   },
   {
-    "path": "Network/IPv6/2-Addressing.md"
+    "path": "Network/IPv6/2-Структура пакета.md"
   },
   {
-    "path": "Network/IPv6/3-SLAAC.md"
+    "path": "Network/IPv6/3-Multicast.md"
   },
   {
-    "path": "Network/IPv6/DHCPv6.md"
+    "path": "Network/IPv6/4-NDP.md"
+  },
+  {
+    "path": "Network/IPv6/5-SLAAC.md"
+  },
+  {
+    "path": "Network/IPv6/6-DHCPv6.md"
+  },
+  {
+    "path": "Network/IPv6/7-pMTUd.md"
+  },
+  {
+    "path": "Network/IPv6/8-DNS.md"
   },
   {
     "path": "Other/About.md"
