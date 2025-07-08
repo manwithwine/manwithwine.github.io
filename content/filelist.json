@@ -12,7 +12,10 @@
     "path": "Network/Содержание.md"
   },
   {
-    "path": "Network/IPv6/1-Basics.md"
+    "path": "Network/IPv6/Содержание.md"
+  },
+  {
+    "path": "Network/IPv6/1-Основы.md"
   },
   {
     "path": "Network/IPv6/2-Addressing.md"
