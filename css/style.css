@@ -162,8 +162,6 @@ body {
     border-radius: 4px;
     font-weight: bold;
     color: white;
-    margin-left: 10px; /* Added this line to move it right */
-    margin-right: -10px; /* Compensate for the added left margin */
 }
 
 .home-button:hover {
@@ -172,6 +170,8 @@ body {
 
 .home-button i {
     margin-right: 8px;
+    margin-left: 5px; /* Add this to move just the icon */
+    transform: translateX(3px); /* Fine-tune position */
 }
 
 .nav-item i.fa-file-alt {
@@ -414,5 +414,35 @@ body {
     img {
         page-break-inside: avoid;
         max-width: 100% !important;
+    }
+}
+
+.markdown-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    overflow-x: auto;
+    display: block;
+    border: 1px solid var(--border-color);
+}
+
+.markdown-body th, .markdown-body td {
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    text-align: left;
+}
+
+.markdown-body th {
+    background-color: rgba(255,255,255,0.05);
+}
+
+@media (max-width: 768px) {
+    .markdown-body table {
+        font-size: 0.875rem;
+    }
+
+    .markdown-body th, .markdown-body td {
+        padding: 0.5rem;
+        min-width: 100px; /* Prevents cell content from squeezing */
     }
 }

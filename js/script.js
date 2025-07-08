@@ -7,10 +7,10 @@ document.addEventListener('DOMContentLoaded', function() {
         sidebar.classList.toggle('open');
     });
 
-    // Home button in sidebar
+    // Home button in sidebar with adjusted icon position
     const homeButton = document.createElement('div');
     homeButton.className = 'nav-item home-button';
-    homeButton.innerHTML = '<i class="fas fa-home"></i> Home';
+    homeButton.innerHTML = '<i class="fas fa-home" style="margin-left: 5px; transform: translateX(3px)"></i> Home';
     homeButton.addEventListener('click', () => {
         document.getElementById('content-display').innerHTML = `
             <h1>Welcome to My Knowledge Base</h1>
@@ -154,7 +154,14 @@ async function loadContent(filePath) {
         if (!response.ok) throw new Error('File not found');
 
         const markdown = await response.text();
-        const html = marked.parse(markdown);
+        let html = marked.parse(markdown);
+
+        // Fix markdown links to use loadContent
+        html = html.replace(/href="([^"]+\.md)"/g, 'href="#" onclick="loadContent(\'$1\'); return false;"');
+
+        // Add responsive table wrapper if needed
+        html = html.replace(/<table>/g, '<div class="table-wrapper"><table>');
+        html = html.replace(/<\/table>/g, '</table></div>');
 
         document.getElementById('content-display').innerHTML = html;
         window.location.hash = filePath;
@@ -294,6 +301,7 @@ function performSearch(query) {
 
 // Mobile sidebar improvements
 const sidebarOverlay = document.getElementById('sidebarOverlay');
+const sidebar = document.getElementById('sidebar');
 
 // Close sidebar when clicking overlay
 sidebarOverlay.addEventListener('click', () => {
@@ -302,6 +310,7 @@ sidebarOverlay.addEventListener('click', () => {
 
 // Move menu toggle button
 function positionMenuToggle() {
+    const menuToggle = document.getElementById('menu-toggle');
     if (window.innerWidth <= 768) {
         menuToggle.style.position = 'fixed';
         menuToggle.style.bottom = '20px';
