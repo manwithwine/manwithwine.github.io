@@ -156,17 +156,23 @@ async function loadContent(filePath) {
         const markdown = await response.text();
         let html = marked.parse(markdown);
 
-        // Fix markdown links to use loadContent
-        html = html.replace(/href="([^"]+\.md)"/g, 'href="#" onclick="loadContent(\'$1\'); return false;"');
+        // Fix markdown links to use loadContent with proper paths
+        html = html.replace(/href="([^"]+\.md)"/g, (match, linkPath) => {
+            // Resolve relative paths
+            const basePath = filePath.substring(0, filePath.lastIndexOf('/') + 1);
+            const fullPath = new URL(linkPath, 'http://example.com/' + basePath).pathname.substring(1);
+            return `href="#" onclick="loadContent('${fullPath}'); return false;"`;
+        });
 
-        // Add responsive table wrapper if needed
+        // Add responsive table wrapper
         html = html.replace(/<table>/g, '<div class="table-wrapper"><table>');
         html = html.replace(/<\/table>/g, '</table></div>');
 
+        // Fix code blocks
+        html = html.replace(/<pre><code>/g, '<pre><code class="language-plaintext">');
+
         document.getElementById('content-display').innerHTML = html;
         window.location.hash = filePath;
-
-        // Scroll to top
         window.scrollTo(0, 0);
     } catch (error) {
         document.getElementById('content-display').innerHTML = `
