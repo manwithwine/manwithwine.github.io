@@ -156,28 +156,36 @@ async function loadContent(filePath) {
         const markdown = await response.text();
         let html = marked.parse(markdown);
 
-        // Fix both regular links and anchor links
+        // Process both regular links and anchor links
         html = html.replace(/href="([^"]+\.md)(#[^"]+)?"/g, (match, linkPath, anchor) => {
             const basePath = filePath.substring(0, filePath.lastIndexOf('/') + 1);
             const fullPath = new URL(linkPath, 'http://example.com/' + basePath).pathname.substring(1);
+
             if (anchor) {
-                return `href="${anchor}" onclick="loadContent('${fullPath}'); setTimeout(() => { 
-                    const target = document.querySelector('${anchor}'); 
-                    if (target) target.scrollIntoView(); 
-                }, 100); return false;"`;
+                // Convert markdown header to DOM ID format (same as marked.js does)
+                const domId = anchor.toLowerCase()
+                    .replace(/[^\wа-яё]+/gi, '-')  // Replace special chars with dash
+                    .replace(/^-+|-+$/g, '');      // Remove leading/trailing dashes
+
+                return `href="#${domId}" onclick="loadContentWithAnchor('${fullPath}', '${domId}'); return false;"`;
             }
             return `href="#" onclick="loadContent('${fullPath}'); return false;"`;
         });
 
         document.getElementById('content-display').innerHTML = html;
 
-        // Handle anchor from URL
-        if (window.location.hash && window.location.hash.includes('#')) {
-            setTimeout(() => {
-                const anchor = window.location.hash;
-                const target = document.querySelector(anchor);
-                if (target) target.scrollIntoView();
-            }, 100);
+        // Handle initial anchor from URL
+        if (window.location.hash) {
+            const hashParts = window.location.hash.split('#');
+            if (hashParts.length > 1) {
+                const targetId = hashParts[1].toLowerCase()
+                    .replace(/[^\wа-яё]+/gi, '-')
+                    .replace(/^-+|-+$/g, '');
+
+                setTimeout(() => {
+                    scrollToAnchor(targetId);
+                }, 100);
+            }
         } else {
             window.scrollTo(0, 0);
         }
@@ -191,6 +199,32 @@ async function loadContent(filePath) {
                 </button>
             </div>
         `;
+    }
+}
+
+// New helper function to load content and scroll to anchor
+function loadContentWithAnchor(filePath, anchorId) {
+    loadContent(filePath);
+    window.location.hash = anchorId;
+    setTimeout(() => {
+        scrollToAnchor(anchorId);
+    }, 300); // Slightly longer delay to ensure content is loaded
+}
+
+// New helper function to scroll to anchor
+function scrollToAnchor(anchorId) {
+    const target = document.getElementById(anchorId);
+    if (!target) {
+        // Try to find by header text as fallback
+        const headers = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+        for (const header of headers) {
+            if (header.textContent.toLowerCase().replace(/[^\wа-яё]+/gi, '-') === anchorId) {
+                header.scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+        }
+    } else {
+        target.scrollIntoView({ behavior: 'smooth' });
     }
 }
 
