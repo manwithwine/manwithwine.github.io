@@ -156,24 +156,31 @@ async function loadContent(filePath) {
         const markdown = await response.text();
         let html = marked.parse(markdown);
 
-        // Fix markdown links to use loadContent with proper paths
-        html = html.replace(/href="([^"]+\.md)"/g, (match, linkPath) => {
-            // Resolve relative paths
+        // Fix both regular links and anchor links
+        html = html.replace(/href="([^"]+\.md)(#[^"]+)?"/g, (match, linkPath, anchor) => {
             const basePath = filePath.substring(0, filePath.lastIndexOf('/') + 1);
             const fullPath = new URL(linkPath, 'http://example.com/' + basePath).pathname.substring(1);
+            if (anchor) {
+                return `href="${anchor}" onclick="loadContent('${fullPath}'); setTimeout(() => { 
+                    const target = document.querySelector('${anchor}'); 
+                    if (target) target.scrollIntoView(); 
+                }, 100); return false;"`;
+            }
             return `href="#" onclick="loadContent('${fullPath}'); return false;"`;
         });
 
-        // Add responsive table wrapper
-        html = html.replace(/<table>/g, '<div class="table-wrapper"><table>');
-        html = html.replace(/<\/table>/g, '</table></div>');
-
-        // Fix code blocks
-        html = html.replace(/<pre><code>/g, '<pre><code class="language-plaintext">');
-
         document.getElementById('content-display').innerHTML = html;
-        window.location.hash = filePath;
-        window.scrollTo(0, 0);
+
+        // Handle anchor from URL
+        if (window.location.hash && window.location.hash.includes('#')) {
+            setTimeout(() => {
+                const anchor = window.location.hash;
+                const target = document.querySelector(anchor);
+                if (target) target.scrollIntoView();
+            }, 100);
+        } else {
+            window.scrollTo(0, 0);
+        }
     } catch (error) {
         document.getElementById('content-display').innerHTML = `
             <div class="error-message">
@@ -258,12 +265,21 @@ function performSearch(query) {
             const contentOccurrences = (item.content.match(new RegExp(queryLower, 'g')) || []).length;
             score += contentOccurrences * 0.5;
 
-            results.push({ ...item, score });
+            // Find position of first match for sorting
+            const firstMatchPos = item.content.indexOf(queryLower);
+            results.push({
+                ...item,
+                score,
+                firstMatchPos: firstMatchPos >= 0 ? firstMatchPos : Infinity
+            });
         }
     });
 
-    // Sort by relevance
-    results.sort((a, b) => b.score - a.score);
+    // Sort by relevance then by position of first match
+    results.sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        return a.firstMatchPos - b.firstMatchPos;
+    });
 
     // Display results
     if (results.length > 0) {
@@ -293,6 +309,12 @@ function performSearch(query) {
                 loadContent(result.path);
                 document.getElementById('search-input').value = '';
                 resultsContainer.style.display = 'none';
+
+                // Highlight and scroll to search term after content loads
+                setTimeout(() => {
+                    highlightAndScrollToText(query);
+                }, 300);
+
                 if (window.innerWidth <= 768) sidebar.classList.remove('open');
             });
 
@@ -302,6 +324,64 @@ function performSearch(query) {
     } else {
         resultsContainer.innerHTML = '<div class="search-result-item">No results found</div>';
         resultsContainer.style.display = 'block';
+    }
+}
+
+function highlightAndScrollToText(searchText) {
+    // Remove previous highlights
+    document.querySelectorAll('.search-highlight').forEach(el => {
+        const parent = el.parentNode;
+        if (parent) {
+            parent.replaceChild(document.createTextNode(el.textContent), el);
+            parent.normalize();
+        }
+    });
+
+    const content = document.getElementById('content-display');
+    if (!content) return;
+
+    const walker = document.createTreeWalker(
+        content,
+        NodeFilter.SHOW_TEXT,
+        null,
+        false
+    );
+
+    let node;
+    let firstHighlight = null;
+
+    while (node = walker.nextNode()) {
+        const nodeValue = node.nodeValue;
+        const searchRegex = new RegExp(searchText, 'gi');
+        let match;
+
+        while ((match = searchRegex.exec(nodeValue)) !== null) {
+            const range = document.createRange();
+            range.setStart(node, match.index);
+            range.setEnd(node, match.index + searchText.length);
+
+            const span = document.createElement('span');
+            span.className = 'search-highlight';
+            range.surroundContents(span);
+
+            if (!firstHighlight) {
+                firstHighlight = span;
+            }
+        }
+    }
+
+    // Scroll to first highlight
+    if (firstHighlight) {
+        firstHighlight.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        });
+
+        // Add temporary animation
+        firstHighlight.style.animation = 'pulse-highlight 1s';
+        setTimeout(() => {
+            firstHighlight.style.animation = '';
+        }, 1000);
     }
 }
 
