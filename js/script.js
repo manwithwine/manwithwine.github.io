@@ -1,6 +1,5 @@
-// --- ADDED: slugify + marked heading override (do NOT remove this block) ---
 function slugify(text) {
-    return text.trim()
+    return String(text).trim()
         .toLowerCase()
         .replace(/[^\w\u0400-\u04FF0-9 -]/gi, '')
         .replace(/\s+/g, '-');
@@ -10,10 +9,11 @@ marked.use({
     renderer: {
         heading(text, level) {
             const slug = slugify(text);
-            return `<h${level} id="${slug}">${text}</h${level}>`;
+            return `<h${level} id="${slug}">${String(text)}</h${level}>`;
         }
     }
 });
+
 // ---------------------------------------------------------------------------
 
 document.addEventListener('DOMContentLoaded', function() {
