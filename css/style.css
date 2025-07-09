@@ -581,3 +581,13 @@ body {
 [data-theme="dark"] .markdown-body a:hover {
     color: #7fc1ff;
 }
+
+.anchor-highlight {
+    animation: anchor-pulse 2s;
+}
+
+@keyframes anchor-pulse {
+    0% { background-color: rgba(79, 172, 254, 0.2); }
+    50% { background-color: rgba(79, 172, 254, 0.5); }
+    100% { background-color: transparent; }
+}
