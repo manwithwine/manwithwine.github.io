@@ -1,3 +1,21 @@
+// --- ADDED: slugify + marked heading override (do NOT remove this block) ---
+function slugify(text) {
+    return text.trim()
+        .toLowerCase()
+        .replace(/[^\w\u0400-\u04FF0-9 -]/gi, '')
+        .replace(/\s+/g, '-');
+}
+
+marked.use({
+    renderer: {
+        heading(text, level) {
+            const slug = slugify(text);
+            return `<h${level} id="${slug}">${text}</h${level}>`;
+        }
+    }
+});
+// ---------------------------------------------------------------------------
+
 document.addEventListener('DOMContentLoaded', function() {
     // Menu toggle for mobile
     const menuToggle = document.getElementById('menu-toggle');
@@ -148,6 +166,7 @@ async function loadNavigation() {
     }
 }
 
+// ------------- CHANGED: Use slugify(anchor) for scrolling to header -------------
 async function loadContent(filePathWithAnchor) {
     try {
         // Split file path and anchor
@@ -171,24 +190,15 @@ async function loadContent(filePathWithAnchor) {
         // Handle anchor navigation after content loads
         if (anchor) {
             setTimeout(() => {
-                const anchorId = anchor.toLowerCase().replace(/[^\wа-яА-Я]+/g, '-');
-                const elements = [
-                    document.getElementById(anchorId),
-                    document.querySelector(`[name="${anchorId}"]`),
-                    document.querySelector(`a[name="${anchorId}"]`),
-                    ...Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'))
-                        .filter(h => h.textContent.toLowerCase().includes(anchor.toLowerCase()))
-                ].filter(el => el);
-
-                if (elements.length > 0) {
-                    const target = elements[0];
+                const target = document.getElementById(slugify(anchor));
+                if (target) {
                     target.scrollIntoView({ behavior: 'smooth' });
                     target.classList.add('anchor-highlight');
                     setTimeout(() => {
                         target.classList.remove('anchor-highlight');
                     }, 2000);
                 }
-            }, 300); // Increased timeout to ensure DOM is ready
+            }, 300); // Timeout to ensure DOM is ready
         } else {
             window.scrollTo(0, 0);
         }
@@ -206,8 +216,7 @@ async function loadContent(filePathWithAnchor) {
         `;
     }
 }
-
-// Search functionality
+// ---------------------------------------------------------------------
 const searchIndex = [];
 let searchInitialized = false;
 let currentSearchTerm = '';
