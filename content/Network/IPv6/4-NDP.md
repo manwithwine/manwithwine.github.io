@@ -24,7 +24,7 @@
 | Redirect                    | 137        | Указание оптимального маршрута                  |
 
   
-Про [NS/NA](3-Multicast.md#пример-процедуры-выяснения-mac-адреса-соседа-в-ipv6) и [DAD](3-Multicast.md#как-работает-dad)  
+Про [NS/NA](3-Multicast.md#nsna) и [DAD](3-Multicast.md#dad)  
 
 ### RS
 
