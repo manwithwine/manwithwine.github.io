@@ -159,7 +159,7 @@ async function loadContent(filePathWithAnchor) {
         const markdown = await response.text();
         let html = marked.parse(markdown);
 
-        // Process regular links
+        // Process markdown links to use our loadContent function
         html = html.replace(/href="([^"]+\.md)(#[^"]+)?"/g, (match, linkPath, linkAnchor) => {
             const basePath = filePath.substring(0, filePath.lastIndexOf('/') + 1);
             const fullPath = new URL(linkPath, 'http://example.com/' + basePath).pathname.substring(1);
@@ -168,27 +168,31 @@ async function loadContent(filePathWithAnchor) {
 
         document.getElementById('content-display').innerHTML = html;
 
-        // Handle anchor navigation
+        // Handle anchor navigation after content loads
         if (anchor) {
             setTimeout(() => {
-                const anchorElement = document.getElementById(anchor) ||
-                                    document.querySelector(`[name="${anchor}"]`) ||
-                                    document.querySelector(`a[name="${anchor}"]`);
+                const anchorId = anchor.toLowerCase().replace(/[^\wа-яА-Я]+/g, '-');
+                const elements = [
+                    document.getElementById(anchorId),
+                    document.querySelector(`[name="${anchorId}"]`),
+                    document.querySelector(`a[name="${anchorId}"]`),
+                    ...Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'))
+                        .filter(h => h.textContent.toLowerCase().includes(anchor.toLowerCase()))
+                ].filter(el => el);
 
-                if (anchorElement) {
-                    anchorElement.scrollIntoView({ behavior: 'smooth' });
-                    // Add highlight effect
-                    anchorElement.classList.add('anchor-highlight');
+                if (elements.length > 0) {
+                    const target = elements[0];
+                    target.scrollIntoView({ behavior: 'smooth' });
+                    target.classList.add('anchor-highlight');
                     setTimeout(() => {
-                        anchorElement.classList.remove('anchor-highlight');
+                        target.classList.remove('anchor-highlight');
                     }, 2000);
                 }
-            }, 100);
+            }, 300); // Increased timeout to ensure DOM is ready
         } else {
             window.scrollTo(0, 0);
         }
 
-        // Update URL
         window.location.hash = filePathWithAnchor;
     } catch (error) {
         document.getElementById('content-display').innerHTML = `
@@ -206,6 +210,7 @@ async function loadContent(filePathWithAnchor) {
 // Search functionality
 const searchIndex = [];
 let searchInitialized = false;
+let currentSearchTerm = '';
 
 async function initializeSearch() {
     if (searchInitialized) return;
@@ -215,35 +220,26 @@ async function initializeSearch() {
         if (!response.ok) throw new Error('File list not found');
 
         const files = await response.json();
-        const loadingPromises = [];
+        const loadingPromises = files.map(file =>
+            fetch(`content/${file.path}`)
+                .then(res => res.ok ? res.text() : '')
+                .then(markdown => {
+                    const plainText = markdown
+                        .replace(/[#*`\-_\[\]()]/g, ' ')
+                        .replace(/\s+/g, ' ')
+                        .toLowerCase();
 
-        // Load content of each file to index
-        for (const file of files) {
-            loadingPromises.push(
-                fetch(`content/${file.path}`)
-                    .then(contentResponse => {
-                        if (!contentResponse.ok) return;
-                        return contentResponse.text()
-                            .then(markdown => {
-                                // Remove markdown formatting for cleaner search
-                                const plainText = markdown
-                                    .replace(/[#*`\-_\[\]()]/g, ' ')
-                                    .replace(/\s+/g, ' ')
-                                    .toLowerCase();
-
-                                searchIndex.push({
-                                    path: file.path,
-                                    title: file.path.split('/').pop()
-                                        .replace('.md', '')
-                                        .replace(/-/g, ' '),
-                                    content: plainText,
-                                    rawContent: markdown.toLowerCase() // For accurate highlighting
-                                });
-                            });
-                    })
-                    .catch(err => console.error(`Error loading ${file.path}:`, err))
-            );
-        }
+                    searchIndex.push({
+                        path: file.path,
+                        title: file.path.split('/').pop()
+                            .replace('.md', '')
+                            .replace(/-/g, ' '),
+                        content: plainText,
+                        rawMarkdown: markdown
+                    });
+                })
+                .catch(err => console.error(`Error loading ${file.path}:`, err))
+        );
 
         await Promise.all(loadingPromises);
         searchInitialized = true;
@@ -253,29 +249,20 @@ async function initializeSearch() {
         document.getElementById('search-input').addEventListener('input', (e) => {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(() => {
-                performSearch(e.target.value.trim());
+                currentSearchTerm = e.target.value.trim();
+                performSearch(currentSearchTerm);
             }, 300);
-        });
-
-        // Close search when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.search-container')) {
-                document.getElementById('search-results').style.display = 'none';
-            }
         });
 
     } catch (error) {
         console.error('Error initializing search:', error);
-        document.getElementById('search-results').innerHTML =
-            '<div class="search-result-item">Search unavailable</div>';
     }
 }
 
 function performSearch(query) {
     const resultsContainer = document.getElementById('search-results');
-    if (!searchInitialized) {
-        resultsContainer.innerHTML = '<div class="search-result-item">Search not ready</div>';
-        resultsContainer.style.display = 'block';
+    if (!searchInitialized || query.length < 2) {
+        resultsContainer.style.display = 'none';
         return;
     }
 
@@ -283,83 +270,37 @@ function performSearch(query) {
     resultsContainer.style.display = 'block';
 
     try {
-        if (query.length < 2) {
-            resultsContainer.style.display = 'none';
-            return;
-        }
-
         const queryLower = query.toLowerCase();
-        const results = [];
-
-        // Search both titles and content
-        for (const item of searchIndex) {
+        const results = searchIndex.map(item => {
             const titleMatch = item.title.toLowerCase().includes(queryLower);
             const contentMatch = item.content.includes(queryLower);
 
             if (titleMatch || contentMatch) {
-                // Calculate relevance score
-                let score = 0;
-                if (titleMatch) score += 2;
-                if (contentMatch) score += 1;
+                const score = (titleMatch ? 2 : 0) +
+                              (contentMatch ? 1 : 0) +
+                              (item.content.match(new RegExp(queryLower, 'g'))?.length * 0.5 || 0);
 
-                // Count occurrences in content
-                const contentOccurrences = (item.content.match(new RegExp(queryLower, 'g')) || []).length;
-                score += contentOccurrences * 0.5;
-
-                // Find position of first match
-                const firstMatchPos = item.content.indexOf(queryLower);
-
-                results.push({
-                    ...item,
-                    score,
-                    firstMatchPos: firstMatchPos >= 0 ? firstMatchPos : Infinity
-                });
+                return { ...item, score };
             }
-        }
+            return null;
+        }).filter(Boolean).sort((a, b) => b.score - a.score);
 
-        // Sort by relevance then by position of first match
-        results.sort((a, b) => b.score - a.score || a.firstMatchPos - b.firstMatchPos);
-
-        // Display results
-        if (results.length > 0) {
-            resultsContainer.innerHTML = '';
-
-            for (const result of results) {
+        resultsContainer.innerHTML = '';
+        if (results.length) {
+            results.forEach(result => {
                 const resultElement = document.createElement('div');
                 resultElement.className = 'search-result-item';
-
-                // Highlight matching parts in title
-                const displayTitle = result.title.replace(
-                    new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'),
-                    match => `<span class="highlight">${match}</span>`
-                );
-
-                // Show path without filename
-                const pathParts = result.path.split('/');
-                pathParts.pop();
-
                 resultElement.innerHTML = `
-                    <div class="title">${displayTitle}</div>
-                    <div class="path">${pathParts.join(' › ')}</div>
+                    <div class="title">${highlightMatches(result.title, query)}</div>
+                    <div class="path">${result.path.split('/').slice(0, -1).join(' › ')}</div>
                 `;
 
                 resultElement.addEventListener('click', () => {
-                    document.getElementById('search-input').value = '';
-                    resultsContainer.style.display = 'none';
-
-                    loadContent(result.path).then(() => {
-                        setTimeout(() => {
-                            highlightSearchTerm(query, result.rawContent);
-                        }, 100);
-                    });
-
-                    if (window.innerWidth <= 768) {
-                        document.getElementById('sidebar').classList.remove('open');
-                    }
+                    loadSearchResult(result.path, query);
                 });
 
                 resultsContainer.appendChild(resultElement);
-            }
+            });
         } else {
             resultsContainer.innerHTML = '<div class="search-result-item">No results found</div>';
         }
@@ -369,23 +310,38 @@ function performSearch(query) {
     }
 }
 
-function highlightSearchTerm(query, rawContent) {
-    const contentElement = document.getElementById('content-display');
-    if (!contentElement) return;
+function highlightMatches(text, query) {
+    return text.replace(
+        new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'),
+        match => `<span class="highlight">${match}</span>`
+    );
+}
+
+async function loadSearchResult(filePath, query) {
+    const resultsContainer = document.getElementById('search-results');
+    resultsContainer.style.display = 'none';
+    document.getElementById('search-input').value = '';
+
+    await loadContent(filePath);
+
+    if (query) {
+        setTimeout(() => {
+            highlightAndScrollToSearchTerm(query);
+        }, 500);
+    }
+}
+
+function highlightAndScrollToSearchTerm(query) {
+    const contentEl = document.getElementById('content-display');
+    if (!contentEl) return;
 
     // Clear previous highlights
-    const oldHighlights = contentElement.querySelectorAll('.search-highlight');
-    oldHighlights.forEach(el => {
-        const parent = el.parentNode;
-        if (parent) {
-            parent.replaceChild(document.createTextNode(el.textContent), el);
-            parent.normalize();
-        }
+    contentEl.querySelectorAll('.search-highlight').forEach(el => {
+        el.replaceWith(el.textContent);
     });
 
-    const queryLower = query.toLowerCase();
     const walker = document.createTreeWalker(
-        contentElement,
+        contentEl,
         NodeFilter.SHOW_TEXT,
         null,
         false
@@ -393,10 +349,11 @@ function highlightSearchTerm(query, rawContent) {
 
     let node;
     let firstHighlight = null;
+    const queryLower = query.toLowerCase();
 
     while (node = walker.nextNode()) {
         const nodeValue = node.nodeValue.toLowerCase();
-        let matchPos = nodeValue.indexOf(queryLower);
+        const matchPos = nodeValue.indexOf(queryLower);
 
         if (matchPos >= 0) {
             const range = document.createRange();
@@ -409,22 +366,12 @@ function highlightSearchTerm(query, rawContent) {
 
             if (!firstHighlight) {
                 firstHighlight = span;
+                setTimeout(() => {
+                    span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    span.style.animation = 'pulse-highlight 1.5s';
+                }, 50);
             }
         }
-    }
-
-    // Scroll to first highlight
-    if (firstHighlight) {
-        firstHighlight.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center'
-        });
-
-        // Add temporary animation
-        firstHighlight.style.animation = 'pulse-highlight 1.5s';
-        setTimeout(() => {
-            firstHighlight.style.animation = '';
-        }, 1500);
     }
 }
 
