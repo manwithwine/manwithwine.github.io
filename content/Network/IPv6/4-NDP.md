@@ -19,8 +19,8 @@
 |:----------------------------|:-----------|:------------------------------------------------|
 | Router Solicitation (RS)    | 133        | Запрос информации о маршрутизаторах             |
 | Router Advertisement (RA)   | 134        | Рассылка параметров сети (префикс, MTU, DHCPv6) |
-| Neighbor Solicitation (NS)  | 135        | Поиск MAC по IPv6 (аналог ARP)                  |
-| Neighbor Advertisement (NA) | 136        | Ответ с MAC-адресом                             |
+| Neighbor Solicitation (NS)  | 135        | Поиск MAC по IPv6 (аналог ARP Request)          |
+| Neighbor Advertisement (NA) | 136        | Ответ с MAC-адресом (аналог ARP Reply)          |
 | Redirect                    | 137        | Указание оптимального маршрута                  |
 
   
