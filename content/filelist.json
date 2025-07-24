@@ -12,6 +12,30 @@
     "path": "Network/Содержание.md"
   },
   {
+    "path": "Network/BGP/Содержание.md"
+  },
+  {
+    "path": "Network/BGP/1-Введение-в-BGP.md"
+  },
+  {
+    "path": "Network/BGP/2-Архитектура.md"
+  },
+  {
+    "path": "Network/BGP/3-Типы-BGP.md"
+  },
+  {
+    "path": "Network/BGP/4-BGP-сообщения-и-разбор-пакетов.md"
+  },
+  {
+    "path": "Network/BGP/5-Атрибуты.md"
+  },
+  {
+    "path": "Network/BGP/6-Политики-и-фильтрация.md"
+  },
+  {
+    "path": "Network/BGP/7-AFI-SAFI-и-MP-BGP.md"
+  },
+  {
     "path": "Network/IPv6/Содержание.md"
   },
   {
@@ -42,12 +66,9 @@
     "path": "Other/About.md"
   },
   {
-    "path": "Testing bot/Mansur.md"
+    "path": "TG-Notes/test.md"
   },
   {
-    "path": "Testing bot/test.md"
-  },
-  {
-    "path": "Testing bot/test2.md"
+    "path": "TG-Notes/test2.md"
   }
 ]
