@@ -1,12 +1,9 @@
 [
   {
-    "path": "Linux/Intro.md"
+    "path": "Linux/1.Путь пакета.md"
   },
   {
     "path": "Linux/Commands.md"
-  },
-  {
-    "path": "Linux/Setup.md"
   },
   {
     "path": "Network/Содержание.md"
