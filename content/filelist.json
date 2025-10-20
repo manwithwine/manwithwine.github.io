@@ -9,6 +9,24 @@
     "path": "Network/Содержание.md"
   },
   {
+    "path": "Network/EVPN-VXLAN/1-Основы VXLAN.md"
+  },
+  {
+    "path": "Network/EVPN-VXLAN/2-Основы EVPN.md"
+  },
+  {
+    "path": "Network/EVPN-VXLAN/3-Модели работы с VLAN в EVPN.md"
+  },
+  {
+    "path": "Network/EVPN-VXLAN/4-Типы маршрутов в EVPN.md"
+  },
+  {
+    "path": "Network/EVPN-VXLAN/5-Symmetric и Asymmetric IRB.md"
+  },
+  {
+    "path": "Network/EVPN-VXLAN/6-Приоритет маршрутов Type-2 и Type-5.md"
+  },
+  {
     "path": "Network/IPv6/Содержание.md"
   },
   {
@@ -36,13 +54,22 @@
     "path": "Network/IPv6/8-DNS.md"
   },
   {
+    "path": "Network/Уровни плоскостей/1-Зачем нужно.md"
+  },
+  {
+    "path": "Network/Уровни плоскостей/2-Data Plane.md"
+  },
+  {
+    "path": "Network/Уровни плоскостей/3-Control Plane.md"
+  },
+  {
+    "path": "Network/Уровни плоскостей/4-Management Plane.md"
+  },
+  {
     "path": "Other/About.md"
   },
   {
     "path": "Other/Репликация БД.md"
-  },
-  {
-    "path": "TG-Notes/note1.md"
   },
   {
     "path": "TG-Notes/test.md"
