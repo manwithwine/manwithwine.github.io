@@ -76,6 +76,44 @@ body {
     overflow-y: auto;
     max-height: calc(100vh - 150px);
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    /* Новые свойства для улучшения скролла */
+    height: 100%;
+    flex: 1;
+}
+
+/* Обновите медиа-запрос для мобильных */
+@media (max-width: 768px) {
+    .nav-container {
+        max-height: none;
+        height: auto;
+        flex: 1;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        padding-bottom: 20px; /* Добавляем отступ снизу */
+    }
+
+    /* Улучшаем структуру сайдбара */
+    .sidebar {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    .sidebar h1 {
+        flex-shrink: 0;
+    }
+
+    .search-container {
+        flex-shrink: 0;
+    }
+
+    /* Увеличиваем область касания для навигации */
+    .nav-item, .nav-category-title {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
 }
 
 .nav-category {
