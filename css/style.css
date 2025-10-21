@@ -76,10 +76,17 @@ body {
     overflow-y: auto;
     max-height: calc(100vh - 150px);
     -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-    /* Новые свойства для улучшения скролла */
-    height: 100%;
-    flex: 1;
+}
+
+.nav-items {
+    padding-left: 20px;
+    max-height: 500px;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.nav-items.collapsed {
+    max-height: 0;
 }
 
 /* Обновите медиа-запрос для мобильных */
@@ -608,32 +615,38 @@ body {
 }
 @media (max-width: 768px) {
     .nav-container {
-        max-height: none;
+        max-height: none !important;
         height: auto;
         flex: 1;
+        overflow-y: auto;
         -webkit-overflow-scrolling: touch;
-        overscroll-behavior: contain;
-        padding-bottom: 80px; /* Место для кнопки меню */
+        padding-bottom: 80px;
     }
 
     .nav-items {
-        max-height: none; /* Убираем ограничение на мобильных */
-        overflow: visible;
+        max-height: none !important;
+        overflow: visible !important;
     }
 
     .nav-items.collapsed {
-        max-height: 0;
-        overflow: hidden;
+        max-height: 0 !important;
+        overflow: hidden !important;
     }
 
     /* Улучшаем отображение глубокой вложенности */
     .nav-items .nav-items {
-        padding-left: 12px;
-        margin-left: 8px;
+        padding-left: 15px;
+        border-left: 1px solid rgba(255,255,255,0.1);
     }
 
     .sidebar {
+        display: flex;
+        flex-direction: column;
         height: 100vh;
-        max-height: 100vh;
+    }
+
+    .sidebar h1,
+    .search-container {
+        flex-shrink: 0;
     }
 }
