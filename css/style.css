@@ -141,12 +141,45 @@ body {
 .nav-items {
     padding-left: 20px;
     max-height: 500px;
-    overflow: hidden;
+    overflow: visible; /* Изменено с hidden */
     transition: max-height 0.3s ease;
 }
 
 .nav-items.collapsed {
     max-height: 0;
+    overflow: hidden; /* Скрываем только когда свернуто */
+}
+
+/* Добавьте эти стили для правильного скроллинга */
+.nav-container {
+    overflow-y: auto;
+    max-height: calc(100vh - 150px);
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    height: 100%;
+}
+
+/* Улучшения для глубокой вложенности */
+.nav-item {
+    padding: 10px 0;
+    cursor: pointer;
+    color: rgba(255,255,255,0.8);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+}
+
+/* Для вложенных папок добавляем отступы */
+.nav-items .nav-items {
+    padding-left: 15px;
+    border-left: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Убедитесь, что сайдбар может скроллиться */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
 .nav-item {
@@ -605,4 +638,35 @@ body {
 
 [data-theme="dark"] .markdown-body a:hover {
     color: #7fc1ff;
+}
+@media (max-width: 768px) {
+    .nav-container {
+        max-height: none;
+        height: auto;
+        flex: 1;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        padding-bottom: 80px; /* Место для кнопки меню */
+    }
+
+    .nav-items {
+        max-height: none; /* Убираем ограничение на мобильных */
+        overflow: visible;
+    }
+
+    .nav-items.collapsed {
+        max-height: 0;
+        overflow: hidden;
+    }
+
+    /* Улучшаем отображение глубокой вложенности */
+    .nav-items .nav-items {
+        padding-left: 12px;
+        margin-left: 8px;
+    }
+
+    .sidebar {
+        height: 100vh;
+        max-height: 100vh;
+    }
 }
