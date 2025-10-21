@@ -81,12 +81,10 @@ body {
 .nav-items {
     padding-left: 20px;
     overflow: visible;
-    transition: max-height 0.3s ease;
 }
 
 .nav-items.collapsed {
-    max-height: 0;
-    overflow: hidden;
+    display: none; /* Просто скрываем свернутые элементы */
 }
 
 /* Обновите медиа-запрос для мобильных */
