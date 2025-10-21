@@ -141,45 +141,12 @@ body {
 .nav-items {
     padding-left: 20px;
     max-height: 500px;
-    overflow: visible; /* Изменено с hidden */
+    overflow: hidden;
     transition: max-height 0.3s ease;
 }
 
 .nav-items.collapsed {
     max-height: 0;
-    overflow: hidden; /* Скрываем только когда свернуто */
-}
-
-/* Добавьте эти стили для правильного скроллинга */
-.nav-container {
-    overflow-y: auto;
-    max-height: calc(100vh - 150px);
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-    height: 100%;
-}
-
-/* Улучшения для глубокой вложенности */
-.nav-item {
-    padding: 10px 0;
-    cursor: pointer;
-    color: rgba(255,255,255,0.8);
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-}
-
-/* Для вложенных папок добавляем отступы */
-.nav-items .nav-items {
-    padding-left: 15px;
-    border-left: 1px solid rgba(255,255,255,0.1);
-}
-
-/* Убедитесь, что сайдбар может скроллиться */
-.sidebar {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
 }
 
 .nav-item {
