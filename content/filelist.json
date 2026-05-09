@@ -27,196 +27,265 @@
     "path": "Network/EVPN-VXLAN/6-Приоритет маршрутов Type-2 и Type-5.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter1 - network device/1 hardware modules.md"
+    "path": "Network/hcip/datacom/quick notes.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter1 - network device/2 planes.md"
+    "path": "Network/hcip/datacom/01 - network device/1 hardware modules.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter1 - network device/3 packet forwarding.md"
+    "path": "Network/hcip/datacom/01 - network device/2 planes.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter1 - network device/quiz and summary.md"
+    "path": "Network/hcip/datacom/01 - network device/3 packet forwarding.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter2 - ip routing basics/1 ip routing basics.md"
+    "path": "Network/hcip/datacom/01 - network device/quiz and summary.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter2 - ip routing basics/2 route import.md"
+    "path": "Network/hcip/datacom/02 - ip routing basics/1 ip routing basics.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter2 - ip routing basics/quiz and summary.md"
+    "path": "Network/hcip/datacom/02 - ip routing basics/2 route import.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter3 - ospf basics/1 classification of dynamic routing protocols.md"
+    "path": "Network/hcip/datacom/02 - ip routing basics/quiz and summary.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter3 - ospf basics/2 overview ospf.md"
+    "path": "Network/hcip/datacom/03 - ospf basics/1 classification of dynamic routing protocols.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter3 - ospf basics/quiz and summary.md"
+    "path": "Network/hcip/datacom/03 - ospf basics/2 overview ospf.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter4 - ospf route calculation/1 intra-area route calculation.md"
+    "path": "Network/hcip/datacom/03 - ospf basics/quiz and summary.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter4 - ospf route calculation/2 inter-area route calculation.md"
+    "path": "Network/hcip/datacom/04 - ospf route calculation/1 intra-area route calculation.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter4 - ospf route calculation/3 external route calculation.md"
+    "path": "Network/hcip/datacom/04 - ospf route calculation/2 inter-area route calculation.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter4 - ospf route calculation/quiz and summary.md"
+    "path": "Network/hcip/datacom/04 - ospf route calculation/3 external route calculation.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter5 - ospf special areas and other features/1 stub and totally stub areas.md"
+    "path": "Network/hcip/datacom/04 - ospf route calculation/quiz and summary.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter5 - ospf special areas and other features/2 nssa and totally nssa.md"
+    "path": "Network/hcip/datacom/05 - ospf special areas and other features/1 stub and totally stub areas.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter5 - ospf special areas and other features/3 route summarization.md"
+    "path": "Network/hcip/datacom/05 - ospf special areas and other features/2 nssa and totally nssa.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter5 - ospf special areas and other features/quiz and summary.md"
+    "path": "Network/hcip/datacom/05 - ospf special areas and other features/3 route summarization.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter6 - isis implementation and configuration/1 basic concepts of isis.md"
+    "path": "Network/hcip/datacom/05 - ospf special areas and other features/quiz and summary.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter6 - isis implementation and configuration/2 working mechanism of isis.md"
+    "path": "Network/hcip/datacom/06 - isis implementation and configuration/1 basic concepts of isis.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter6 - isis implementation and configuration/quiz and summary.md"
+    "path": "Network/hcip/datacom/06 - isis implementation and configuration/2 working mechanism of isis.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter7 - bgp basics/1 - introduction of bgp.md"
+    "path": "Network/hcip/datacom/06 - isis implementation and configuration/quiz and summary.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter7 - bgp basics/quiz and summary.md"
+    "path": "Network/hcip/datacom/07 - bgp basics/1 - introduction of bgp.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter8 - bgp path attributes and rrs/1 bgp path attributes.md"
+    "path": "Network/hcip/datacom/07 - bgp basics/quiz and summary.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter8 - bgp path attributes and rrs/2 route-reflector.md"
+    "path": "Network/hcip/datacom/08 - bgp path attributes and rrs/1 bgp path attributes.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter8 - bgp path attributes and rrs/quiz and summary.md"
+    "path": "Network/hcip/datacom/08 - bgp path attributes and rrs/2 route-reflector.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter9 - preferred bgp route selection/1 route selection.md"
+    "path": "Network/hcip/datacom/08 - bgp path attributes and rrs/quiz and summary.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter9 - preferred bgp route selection/quiz.md"
+    "path": "Network/hcip/datacom/09 - preferred bgp route selection/1 route selection.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter10 - bgp evpn basics/1 mp-bgp.md"
+    "path": "Network/hcip/datacom/09 - preferred bgp route selection/quiz.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter10 - bgp evpn basics/2 evpn.md"
+    "path": "Network/hcip/datacom/10 - bgp evpn basics/1 mp-bgp.md"
+  },
+  {
+    "path": "Network/hcip/datacom/10 - bgp evpn basics/2 evpn.md"
+  },
+  {
+    "path": "Network/hcip/datacom/11 - routing policy and control/1 routing control overview.md"
+  },
+  {
+    "path": "Network/hcip/datacom/11 - routing policy and control/quiz.md"
+  },
+  {
+    "path": "Network/hcip/datacom/12 - traffic filtering and forwarding path/1 pbr.md"
+  },
+  {
+    "path": "Network/hcip/datacom/12 - traffic filtering and forwarding path/2 mqc.md"
+  },
+  {
+    "path": "Network/hcip/datacom/12 - traffic filtering and forwarding path/3 traffic filtering.md"
+  },
+  {
+    "path": "Network/hcip/datacom/12 - traffic filtering and forwarding path/quiz.md"
+  },
+  {
+    "path": "Network/hcip/datacom/13 - typical campus network technologies/1 introduction to a campus network.md"
+  },
+  {
+    "path": "Network/hcip/datacom/13 - typical campus network technologies/2 ethernet switching basics.md"
+  },
+  {
+    "path": "Network/hcip/datacom/13 - typical campus network technologies/3 wireless access.md"
+  },
+  {
+    "path": "Network/hcip/datacom/13 - typical campus network technologies/4 network reliability.md"
+  },
+  {
+    "path": "Network/hcip/datacom/13 - typical campus network technologies/5 network service and management.md"
+  },
+  {
+    "path": "Network/hcip/datacom/13 - typical campus network technologies/6 network security.md"
+  },
+  {
+    "path": "Network/hcip/datacom/13 - typical campus network technologies/7 vpn.md"
+  },
+  {
+    "path": "Network/hcip/datacom/13 - typical campus network technologies/8 multicast.md"
+  },
+  {
+    "path": "Network/hcip/datacom/13 - typical campus network technologies/9 ipv6.md"
+  },
+  {
+    "path": "Network/hcip/datacom/13 - typical campus network technologies/quiz.md"
+  },
+  {
+    "path": "Network/hcip/datacom/14 - rstp/1 introduction to rstp.md"
+  },
+  {
+    "path": "Network/hcip/datacom/14 - rstp/2 working mechanism of rstp.md"
+  },
+  {
+    "path": "Network/hcip/datacom/14 - rstp/quiz.md"
+  },
+  {
+    "path": "Network/hcip/datacom/15 - mstp/1 introduction to mstp.md"
+  },
+  {
+    "path": "Network/hcip/datacom/15 - mstp/quiz.md"
+  },
+  {
+    "path": "Network/hcip/datacom/16 - stack and css/1 overview of stack and css.md"
+  },
+  {
+    "path": "Network/hcip/datacom/16 - stack and css/2 implementation of stack.md"
+  },
+  {
+    "path": "Network/hcip/datacom/16 - stack and css/3 implementation of css.md"
+  },
+  {
+    "path": "Network/hcip/datacom/17 - ip multicast basics/1 basic concepts of multicast.md"
+  },
+  {
+    "path": "Network/hcip/datacom/17 - ip multicast basics/2 multicast data forwarding implementation.md"
+  },
+  {
+    "path": "Network/hcip/datacom/17 - ip multicast basics/quiz.md"
+  },
+  {
+    "path": "Network/hcip/datacom/18 - igmp/1 igmp introduction.md"
+  },
+  {
+    "path": "Network/hcip/datacom/18 - igmp/2 igmp features.md"
+  },
+  {
+    "path": "Network/hcip/datacom/19 - pim/1 pim introduction.md"
+  },
+  {
+    "path": "Network/hcip/datacom/19 - pim/2 pim-dm.md"
+  },
+  {
+    "path": "Network/hcip/datacom/20-22 - ipv6 shit/ipv6.md"
+  },
+  {
+    "path": "Network/hcip/datacom/20-22 - ipv6 shit/quiz.md"
+  },
+  {
+    "path": "Network/hcip/datacom/23 - firewall technology/1 introduction to fw.md"
+  },
+  {
+    "path": "Network/hcip/datacom/23 - firewall technology/2 basic concepts of fw.md"
+  },
+  {
+    "path": "Network/hcip/datacom/23 - firewall technology/quiz.md"
+  },
+  {
+    "path": "Network/hcip/datacom/24 - security features of network devices/1 common security hardening policies.md"
+  },
+  {
+    "path": "Network/hcip/datacom/24 - security features of network devices/quiz.md"
+  },
+  {
+    "path": "Network/hcip/datacom/25 - introduction to vpn technology/1 what is vpn.md"
+  },
+  {
+    "path": "Network/hcip/datacom/25 - introduction to vpn technology/2 common vpn technologies.md"
+  },
+  {
+    "path": "Network/hcip/datacom/25 - introduction to vpn technology/quiz.md"
+  },
+  {
+    "path": "Network/hcip/datacom/26 - vrf/1 basic concepts of vrf.md"
+  },
+  {
+    "path": "Network/hcip/datacom/26 - vrf/quiz.md"
+  },
+  {
+    "path": "Network/hcip/datacom/27 - bfd/1 introduction to bfd.md"
+  },
+  {
+    "path": "Network/hcip/datacom/27 - bfd/quiz.md"
+  },
+  {
+    "path": "Network/hcip/datacom/28 - vrrp/1 introduction to vrrp.md"
+  },
+  {
+    "path": "Network/hcip/datacom/28 - vrrp/quiz.md"
+  },
+  {
+    "path": "Network/hcip/datacom/29 - dhcp/dhcp.md"
+  },
+  {
+    "path": "Network/hcip/datacom/30 - network management protocols/1.md"
+  },
+  {
+    "path": "Network/hcip/datacom/30 - network management protocols/quiz.md"
+  },
+  {
+    "path": "Network/hcip/datacom/31 - large-scale wlan deployment/1 overview.md"
   },
   {
     "path": "Network/hcip/datacom/chapter10 - bgp evpn basics/summary.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter11 - routing policy and control/1 routing control overview.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter11 - routing policy and control/quiz.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter12 - traffic filtering and forwarding path/1 pbr.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter12 - traffic filtering and forwarding path/2 mqc.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter12 - traffic filtering and forwarding path/3 traffic filtering.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter12 - traffic filtering and forwarding path/quiz.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter13 - typical campus network technologies/1 introduction to a campus network.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter13 - typical campus network technologies/2 ethernet switching basics.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter13 - typical campus network technologies/3 wireless access.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter13 - typical campus network technologies/4 network reliability.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter13 - typical campus network technologies/5 network service and management.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter13 - typical campus network technologies/6 network security.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter13 - typical campus network technologies/7 vpn.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter13 - typical campus network technologies/8 multicast.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter13 - typical campus network technologies/9 ipv6.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter13 - typical campus network technologies/quiz.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter14 - rstp/1 introduction to rstp.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter14 - rstp/2 working mechanism of rstp.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter14 - rstp/quiz.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter15 - mstp/1 introduction to mstp.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter15 - mstp/quiz.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter16 - stack and css/1 overview of stack and css.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter16 - stack and css/2 implementation of stack.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter16 - stack and css/3 implementation of css.md"
-  },
-  {
     "path": "Network/hcip/datacom/chapter16 - stack and css/Untitled.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter17 - ip multicast basics/1 basic concepts of multicast.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter17 - ip multicast basics/2 multicast data forwarding implementation.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter17 - ip multicast basics/quiz.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter18 - igmp/1 igmp introduction.md"
-  },
-  {
-    "path": "Network/hcip/datacom/chapter18 - igmp/2 igmp features.md"
   },
   {
     "path": "Network/hcip/datacom/chapter18 - igmp/Untitled.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter19 - pim/1 pim introduction.md"
+    "path": "Network/hcip/datacom/dumps/dumps.md"
   },
   {
-    "path": "Network/hcip/datacom/chapter19 - pim/2 pim-dm.md"
+    "path": "Network/Inter-AS L3VPN/Содержание.md"
   },
   {
     "path": "Network/Inter-AS L3VPN/1-Option A.md"
@@ -262,6 +331,9 @@
   },
   {
     "path": "Network/Labs/BGP/2-Conditional Advertisement.md"
+  },
+  {
+    "path": "Network/OSPF/Содержание.md"
   },
   {
     "path": "Network/OSPF/1-Основы.md"
