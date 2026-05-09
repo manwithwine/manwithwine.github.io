@@ -1,0 +1,3 @@
+1. When both interface-level and area-level authentication are configured, OSPF **prioritizes interface- level authentication.** This ensures that interface-specific security overrides area-wide configurations for greater granularity and security.
+2. Silent-interfaces не блокирует анонс сетки, а только не отправляют и не принимают OSPF Hello пакеты. 
+3. **IP prefix list** применяется *для фильтрации маршрутной информации* в протоколах маршрутизации (например, OSPF, BGP). Его нельзя применить для фильтрации трафика/пакетов данных на интерфейсе. Для этого существуют **ACL**
