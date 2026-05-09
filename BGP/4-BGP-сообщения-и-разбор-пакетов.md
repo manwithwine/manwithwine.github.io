@@ -37,18 +37,6 @@ BGP использует 4 типа сообщений:
 | BGP Identifier     | 4 (router-id) |
 | Optional Parameters Length | 1 |
 | Optional Parameters | переменная |
-
-### Разбор (пример)
-48 48 48 48 ... (16 байт Marker)\
-00 2B → длина 43 байта\
-01 → тип OPEN\
-04 → версия BGPv4\
-00 01 → AS = 1\
-C0 00 01 01 → Hold Time = 4096, BGP ID = 192.0.1.1\
-00 → Optional Parameters Length\
-
-
-
 ---
 
 ## 2. UPDATE-сообщение (Type 2)
